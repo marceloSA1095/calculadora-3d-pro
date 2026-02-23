@@ -3,19 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InovaFam3D - Gestão de Vendas</title>
+    <title>InovaFam3D - Gestão Profissional</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; padding: 20px; color: #e2e2e2; }
         .container { max-width: 1000px; margin: 0 auto; }
         
+        /* Estilização do Logo */
+        .logo-container { text-align: center; margin-bottom: 20px; }
+        .logo-img { max-width: 200px; height: auto; border-radius: 10px; background: white; padding: 5px; }
+
         /* Login */
         #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 85vh; }
         .login-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 400px; color: #333; }
         
-        /* Layout */
+        /* Layout Geral */
         .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { font-size: 2.5em; color: #4ecca3; }
+        .header h1 { font-size: 2.2em; color: #4ecca3; margin-top: 10px; }
         .nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         .nav-btn { padding: 12px 20px; border: none; border-radius: 25px; background: #0f3460; color: white; cursor: pointer; font-weight: 600; transition: 0.3s; }
         .nav-btn.active { background: #4ecca3; color: #1a1a2e; }
@@ -24,166 +28,4 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
         .input-group { margin-bottom: 15px; }
         label { display: block; font-weight: 600; margin-bottom: 5px; color: #4ecca3; font-size: 0.9em; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #0f3460; border-radius: 10px; background: #1a1a2e; color: white; font-size: 16px; }
-        
-        .btn { width: 100%; background: #4ecca3; color: #1a1a2e; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn:hover { background: #45b393; transform: translateY(-2px); }
-        .res-box { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-top: 20px; border-left: 5px solid #4ecca3; }
-        .history-item { background: rgba(255,255,255,0.03); padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; }
-        .stat-card { background: #0f3460; padding: 20px; border-radius: 15px; text-align: center; }
-        .stat-val { font-size: 1.8em; font-weight: bold; color: #4ecca3; }
-        .hidden { display: none !important; }
-    </style>
-</head>
-<body>
-
-<div id="login-screen">
-    <div class="login-card">
-        <h2 style="text-align:center; margin-bottom:20px;">InovaFam3D 🔐</h2>
-        <div class="input-group">
-            <label>Senha de Empresa:</label>
-            <input type="password" id="pass-input" placeholder="Digite a senha">
-        </div>
-        <button class="btn" onclick="checkLogin()">ACESSAR SISTEMA</button>
-        <p id="login-error" style="color:red; text-align:center; margin-top:10px; display:none;">Senha incorreta!</p>
-    </div>
-</div>
-
-<div id="main-content" class="container hidden">
-    <div class="header">
-        <h1>InovaFam3D 🎯</h1>
-        <p>Precificação & Gestão Profissional</p>
-        <button onclick="logout()" style="background:none; border:none; color:#888; cursor:pointer; text-decoration:underline; font-size:0.8em; margin-top:10px;">Desconectar</button>
-    </div>
-
-    <div class="nav">
-        <button class="nav-btn active" onclick="showTab('calc')">Calculadora</button>
-        <button class="nav-btn" onclick="showTab('config')">Configurações</button>
-        <button class="nav-btn" onclick="showTab('history')">Histórico</button>
-        <button class="nav-btn" onclick="showTab('analysis')">Análise</button>
-    </div>
-
-    <div id="calc" class="card">
-        <div class="grid">
-            <div class="input-group"><label>Nome do Produto:</label><input type="text" id="prod_nome" placeholder="Ex: Action Figure"></div>
-            <div class="input-group"><label>Peso Peça (g):</label><input type="number" id="prod_peso" value="100"></div>
-            <div class="input-group"><label>Peso Suporte (g):</label><input type="number" id="prod_suporte" value="10"></div>
-            <div class="input-group"><label>Tempo (h):</label><input type="number" id="prod_tempo" value="5" step="0.1"></div>
-            <div class="input-group">
-                <label>Plataforma:</label>
-                <select id="prod_plataforma">
-                    <option value="direta">Direta / Pix (0%)</option>
-                    <option value="elo7">Elo7 (12% + 1,50)</option>
-                    <option value="mercado">M. Livre (16% + 5,00)</option>
-                    <option value="shopee">Shopee (20%)</option>
-                </select>
-            </div>
-            <div class="input-group"><label>Margem Lucro (%):</label><input type="number" id="prod_margem" value="100"></div>
-        </div>
-        <button class="btn" onclick="calcular()">CALCULAR PREÇO</button>
-
-        <div id="box_resultado" class="res-box hidden">
-            <div id="res_preco" style="font-size:1.6em; color:#4ecca3; font-weight:bold;"></div>
-            <div id="res_detalhes" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;"></div>
-            <button class="btn" style="background:#28a745; color:white;" onclick="salvarVenda()">SALVAR NA PLANILHA</button>
-        </div>
-    </div>
-
-    <div id="config" class="card hidden">
-        <div class="grid">
-            <div class="input-group"><label>Filamento (R$/kg):</label><input type="number" id="cfg_filamento"></div>
-            <div class="input-group"><label>Energia (R$/kWh):</label><input type="number" id="cfg_energia"></div>
-            <div class="input-group"><label>Watts (W):</label><input type="number" id="cfg_watts"></div>
-            <div class="input-group"><label>Mão de Obra (R$/h):</label><input type="number" id="cfg_mao"></div>
-            <div class="input-group"><label>Taxa Falha (%):</label><input type="number" id="cfg_falha"></div>
-            <div class="input-group"><label>Embalagem (R$):</label><input type="number" id="cfg_embalagem"></div>
-        </div>
-        <button class="btn" onclick="salvarConfig()">SALVAR CONFIGURAÇÕES</button>
-    </div>
-
-    <div id="history" class="card hidden">
-        <div id="lista_vendas"></div>
-    </div>
-
-    <div id="analysis" class="card hidden">
-        <div class="grid">
-            <div class="stat-card"><label>Vendas (Mês)</label><div class="stat-val" id="stat_vendas">0</div></div>
-            <div class="stat-card"><label>Faturamento</label><div class="stat-val" id="stat_fat">R$ 0</div></div>
-            <div class="stat-card"><label>Lucro Líquido</label><div class="stat-val" id="stat_lucro">R$ 0</div></div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // --- CONFIGURAÇÃO DA INOVAFAM3D ---
-    const default_config = {
-        filamento: 95, 
-        energia: 0.90, 
-        watts: 250, 
-        mao: 15, 
-        falha: 5, 
-        embalagem: 3, 
-        url: "COLE_SEU_LINK_AQUI", // <--- COLE SEU LINK DO GOOGLE SCRIPTS AQUI
-        pass: "15@0117InovaFam"
-    };
-
-    let config = JSON.parse(localStorage.getItem('inovafam_cfg')) || default_config;
-    // Garante que o link da planilha seja atualizado se você mudar no código
-    config.url = default_config.url; 
-    
-    let vendas = JSON.parse(localStorage.getItem('inovafam_vendas')) || [];
-    let atual = null;
-
-    // --- SISTEMA DE LOGIN ---
-    function checkLogin() {
-        const inputPass = document.getElementById('pass-input').value;
-        if(inputPass === config.pass) {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('main-content').classList.remove('hidden');
-            localStorage.setItem('inovafam_auth', 'true');
-        } else {
-            document.getElementById('login-error').style.display = 'block';
-        }
-    }
-
-    // Verifica se já está logado ao carregar a página
-    window.onload = function() {
-        if(localStorage.getItem('inovafam_auth') === 'true') {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('main-content').classList.remove('hidden');
-        }
-    };
-
-    function logout() {
-        localStorage.removeItem('inovafam_auth');
-        location.reload();
-    }
-
-    // --- FUNÇÕES CORE ---
-    function salvarConfig() {
-        config.filamento = parseFloat(document.getElementById('cfg_filamento').value);
-        config.energia = parseFloat(document.getElementById('cfg_energia').value);
-        config.watts = parseFloat(document.getElementById('cfg_watts').value);
-        config.mao = parseFloat(document.getElementById('cfg_mao').value);
-        config.falha = parseFloat(document.getElementById('cfg_falha').value);
-        config.embalagem = parseFloat(document.getElementById('cfg_embalagem').value);
-        localStorage.setItem('inovafam_cfg', JSON.stringify(config));
-        alert("Configurações salvas localmente!");
-    }
-
-    function calcular() {
-        const peso = parseFloat(document.getElementById('prod_peso').value) + parseFloat(document.getElementById('prod_suporte').value);
-        const tempo = parseFloat(document.getElementById('prod_tempo').value);
-        const margem = parseFloat(document.getElementById('prod_margem').value) / 100;
-        const plat = document.getElementById('prod_plataforma').value;
-
-        const cMat = (peso/1000) * config.filamento;
-        const cLuz = (config.watts/1000) * tempo * config.energia;
-        const cMao = tempo * config.mao;
-        const cBase = (cMat + cLuz + cMao + config.embalagem) * (1 + config.falha/100);
-        
-        let preco = cBase * (1 + margem);
-        let taxa = 0;
-        if(plat === 'elo7') { taxa = (preco * 0.12) + 1.5; preco += taxa; }
-        else if(plat === 'mercado') { taxa = (preco * 0.16) + 5; preco += taxa; }
-        else
+        input, select { width: 100%; padding: 12px; border: 1px solid #0f3460; border-radius: 10px; background: #1a1a2e; color: white; font-size:
