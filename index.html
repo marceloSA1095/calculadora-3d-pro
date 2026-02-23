@@ -3,160 +3,315 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InovaFam 3D - Calculadora Empresarial</title>
+    <title>InovaFam 3D - Gestão de Vendas</title>
     <style>
-        :root {
-            --cor-primaria: #2c5aa0;
-            --cor-secundaria: #00a651;
-            --cor-lucro: #28a745;
-            --cor-texto: #333;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Segoe UI', -apple-system, sans-serif;
-            background: linear-gradient(135deg, var(--cor-primaria) 0%, #1e3d72 100%);
-            color: var(--cor-texto);
-            min-height: 100vh;
-            padding: 10px;
-        }
-        .container { max-width: 1400px; margin: 0 auto; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; color: #333; }
+        .container { max-width: 1000px; margin: 0 auto; }
         
-        /* HEADER INOVAFAM */
-        .header {
-            text-align: center;
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 30px;
-        }
-        .logo {
-            font-size: 3em;
-            background: linear-gradient(45deg, var(--cor-primaria), var(--cor-secundaria));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-            font-weight: 800;
-        }
-        .subtitle { color: #666; font-size: 1.2em; }
+        /* Header */
+        .header { text-align: center; color: white; margin-bottom: 30px; }
+        .header h1 { font-size: 2.5em; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
 
-        /* LOGIN */
-        .login-card { 
-            max-width: 450px; 
-            margin: 50px auto; 
-            background: white; 
-            padding: 50px; 
-            border-radius: 25px; 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            text-align: center;
-        }
-        .login-card h2 { 
-            color: var(--cor-primaria); 
-            margin-bottom: 30px;
-            font-size: 2.2em;
-        }
+        /* Navegação */
+        .nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+        .nav-btn { padding: 12px 20px; border: none; border-radius: 25px; background: rgba(255,255,255,0.2); color: white; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .nav-btn.active { background: white; color: #764ba2; }
 
-        /* USER INFO */
-        .user-info { 
-            background: var(--cor-secundaria); 
-            color: white; 
-            padding: 20px; 
-            border-radius: 15px; 
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: 600;
-        }
+        /* Cards */
+        .card { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; color: #555; font-size: 0.9em; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 10px; outline: none; transition: 0.3s; font-size: 16px; }
+        input:focus { border-color: #667eea; }
 
-        /* CARDS */
-        .card { 
-            background: white; 
-            border-radius: 20px; 
-            padding: 30px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            margin-bottom: 25px;
-        }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        /* Botões */
+        .btn { width: 100%; background: #764ba2; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn:hover { background: #5a3682; transform: translateY(-2px); }
+        .btn-save { background: #28a745; margin-top: 20px; }
 
-        /* BOTÕES */
-        .btn { 
-            background: linear-gradient(45deg, var(--cor-primaria), var(--cor-secundaria)); 
-            color: white; 
-            border: none; 
-            padding: 15px 30px; 
-            border-radius: 12px; 
-            font-size: 16px; 
-            font-weight: 600; 
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-        }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        /* Resultados */
+        .res-box { background: #f8f9fa; padding: 20px; border-radius: 15px; margin-top: 20px; border-left: 5px solid #764ba2; }
+        .res-title { font-size: 1.4em; color: #764ba2; margin-bottom: 10px; }
+        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9em; }
 
-        /* RESULTADO */
-        .result { 
-            background: linear-gradient(45deg, var(--cor-lucro), #1e7e34); 
-            color: white; 
-            padding: 30px; 
-            border-radius: 20px; 
-            text-align: center; 
-            font-size: 1.3em; 
-            font-weight: 700;
-            margin-top: 25px;
-        }
-        .preco-final { font-size: 3em; margin: 15px 0; }
-
-        /* NAVEGAÇÃO */
-        .nav { 
-            display: flex; 
-            justify-content: center; 
-            gap: 15px; 
-            margin-bottom: 30px; 
-            flex-wrap: wrap;
-            background: rgba(255,255,255,0.9);
-            padding: 15px;
-            border-radius: 15px;
-        }
-        .nav-btn { 
-            padding: 12px 25px; 
-            border: 2px solid transparent;
-            border-radius: 25px; 
-            background: transparent; 
-            color: var(--cor-primaria); 
-            cursor: pointer; 
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        .nav-btn.active, .nav-btn:hover { 
-            background: var(--cor-primaria); 
-            color: white; 
-            border-color: var(--cor-secundaria);
-        }
-
-        /* DASHBOARD */
-        .dashboard-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-            gap: 20px; 
-            margin-bottom: 30px;
-        }
-        .metric-card {
-            background: linear-gradient(135deg, var(--cor-primaria), var(--cor-secundaria));
-            color: white;
-            padding: 25px;
-            border-radius: 20px;
-            text-align: center;
-        }
-        .metric-value { font-size: 2.5em; font-weight: 800; margin: 10px 0; }
-
-        /* RESPONSIVO */
-        @media (max-width: 768px) {
-            .grid { grid-template-columns: 1fr; }
-            body { padding: 5px; }
-        }
+        /* Histórico e Análise */
+        .history-item { background: #fdfdfd; padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .stat-card { background: #f0f2f5; padding: 20px; border-radius: 15px; text-align: center; }
+        .stat-val { font-size: 1.8em; font-weight: bold; color: #764ba2; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- LOGIN INOVAFAM -->
-        <div id="loginScreen">
-            <div
+
+<div class="container">
+    <div class="header">
+        <h1>InovaFam 3D 🎯</h1>
+        <p>Calculadora & Controle de Vendas</p>
+    </div>
+
+    <div class="nav">
+        <button class="nav-btn active" onclick="showTab('calc')">Calculadora</button>
+        <button class="nav-btn" onclick="showTab('config')">Configurações</button>
+        <button class="nav-btn" onclick="showTab('history')">Histórico</button>
+        <button class="nav-btn" onclick="showTab('analysis')">Análise Mensal</button>
+    </div>
+
+    <div id="calc" class="card">
+        <h3>📊 Nova Impressão</h3>
+        <div class="grid" style="margin-top:20px">
+            <div class="input-group">
+                <label>Nome do Produto:</label>
+                <input type="text" id="prod_nome" placeholder="Ex: Vaso Batman">
+            </div>
+            <div class="input-group">
+                <label>Peso da Peça (g):</label>
+                <input type="number" id="prod_peso" value="100">
+            </div>
+            <div class="input-group">
+                <label>Peso do Suporte (g):</label>
+                <input type="number" id="prod_suporte" value="10">
+            </div>
+            <div class="input-group">
+                <label>Tempo de Impressão (horas):</label>
+                <input type="number" id="prod_tempo" value="5" step="0.1">
+            </div>
+            <div class="input-group">
+                <label>Plataforma de Venda:</label>
+                <select id="prod_plataforma">
+                    <option value="direta">Venda Direta / PIX (0%)</option>
+                    <option value="elo7">Elo7 (12% + R$1,50)</option>
+                    <option value="mercado">Mercado Livre (16% + R$5)</option>
+                    <option value="shopee">Shopee (20%)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Margem de Lucro (%):</label>
+                <input type="number" id="prod_margem" value="100">
+            </div>
+        </div>
+        <button class="btn" onclick="calcularOrcamento()">CALCULAR PREÇO SUGERIDO</button>
+
+        <div id="box_resultado" class="res-box hidden">
+            <div class="res-title" id="res_preco_venda">Preço: R$ 0,00</div>
+            <div class="res-grid">
+                <div>Custo Produção: <b id="res_custo">R$ 0,00</b></div>
+                <div>Lucro Líquido: <b id="res_lucro" style="color: green;">R$ 0,00</b></div>
+                <div>Custo Material: <span id="res_mat">R$ 0,00</span></div>
+                <div>Taxa Plataforma: <span id="res_taxa">R$ 0,00</span></div>
+            </div>
+            <button class="btn btn-save" onclick="salvarVenda()">Confirmar e Salvar Venda</button>
+        </div>
+    </div>
+
+    <div id="config" class="card hidden">
+        <h3>⚙️ Custos Fixos</h3>
+        <div class="grid" style="margin-top:20px">
+            <div class="input-group">
+                <label>Preço Filamento (R$/kg):</label>
+                <input type="number" id="cfg_filamento" value="95">
+            </div>
+            <div class="input-group">
+                <label>Custo Energia (R$/kWh):</label>
+                <input type="number" id="cfg_energia" value="0.90" step="0.01">
+            </div>
+            <div class="input-group">
+                <label>Watts Impressora (W):</label>
+                <input type="number" id="cfg_watts" value="250">
+            </div>
+            <div class="input-group">
+                <label>Mão de Obra (R$/hora):</label>
+                <input type="number" id="cfg_mao" value="15">
+            </div>
+            <div class="input-group">
+                <label>Taxa de Falha (%):</label>
+                <input type="number" id="cfg_falha" value="5">
+            </div>
+            <div class="input-group">
+                <label>Custo Embalagem (R$):</label>
+                <input type="number" id="cfg_embalagem" value="3.00">
+            </div>
+            <div class="input-group" style="grid-column: span 2">
+                <label>Link da Planilha (Google Apps Script):</label>
+                <input type="text" id="cfg_url" placeholder="Cole aqui a URL do Passo 1">
+            </div>
+        </div>
+        <button class="btn" onclick="salvarConfig()">SALVAR CONFIGURAÇÕES</button>
+    </div>
+
+    <div id="history" class="card hidden">
+        <h3>📋 Vendas Recentes</h3>
+        <div id="lista_vendas" style="margin-top:20px"></div>
+        <button class="btn" style="background: #dc3545; margin-top:20px" onclick="limparLocal()">Limpar Histórico Local</button>
+    </div>
+
+    <div id="analysis" class="card hidden">
+        <h3>📊 Dashboard InovaFam</h3>
+        <div class="grid" style="margin-top:20px">
+            <div class="stat-card">
+                <label>Vendas no Mês</label>
+                <div class="stat-val" id="stat_vendas">0</div>
+            </div>
+            <div class="stat-card">
+                <label>Faturamento Mensal</label>
+                <div class="stat-val" id="stat_faturamento" style="color: #28a745;">R$ 0</div>
+            </div>
+            <div class="stat-card">
+                <label>Lucro Real</label>
+                <div class="stat-val" id="stat_lucro" style="color: #007bff;">R$ 0</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Sistema de persistência de dados
+    let config = JSON.parse(localStorage.getItem('inovafam_cfg')) || {
+        filamento: 95, energia: 0.90, watts: 250, mao: 15, falha: 5, embalagem: 3, url: ""
+    };
+    let vendas = JSON.parse(localStorage.getItem('inovafam_vendas')) || [];
+    let calculoAtual = null;
+
+    // Carregar configurações nos campos ao abrir
+    function carregarCamposConfig() {
+        document.getElementById('cfg_filamento').value = config.filamento;
+        document.getElementById('cfg_energia').value = config.energia;
+        document.getElementById('cfg_watts').value = config.watts;
+        document.getElementById('cfg_mao').value = config.mao;
+        document.getElementById('cfg_falha').value = config.falha;
+        document.getElementById('cfg_embalagem').value = config.embalagem;
+        document.getElementById('cfg_url').value = config.url;
+    }
+
+    function salvarConfig() {
+        config = {
+            filamento: parseFloat(document.getElementById('cfg_filamento').value),
+            energia: parseFloat(document.getElementById('cfg_energia').value),
+            watts: parseFloat(document.getElementById('cfg_watts').value),
+            mao: parseFloat(document.getElementById('cfg_mao').value),
+            falha: parseFloat(document.getElementById('cfg_falha').value),
+            embalagem: parseFloat(document.getElementById('cfg_embalagem').value),
+            url: document.getElementById('cfg_url').value
+        };
+        localStorage.setItem('inovafam_cfg', JSON.stringify(config));
+        alert("Configurações atualizadas!");
+    }
+
+    function calcularOrcamento() {
+        const peso = parseFloat(document.getElementById('prod_peso').value) + parseFloat(document.getElementById('prod_suporte').value);
+        const tempo = parseFloat(document.getElementById('prod_tempo').value);
+        const margem = parseFloat(document.getElementById('prod_margem').value) / 100;
+        const plataforma = document.getElementById('prod_plataforma').value;
+
+        // Custos
+        const custoMat = (peso / 1000) * config.filamento;
+        const custoLuz = (config.watts / 1000) * tempo * config.energia;
+        const custoMao = tempo * config.mao;
+        const custoBase = custoMat + custoLuz + custoMao + config.embalagem;
+        const custoComFalha = custoBase * (1 + (config.falha/100));
+        
+        // Preço de Venda
+        let precoSugerido = custoComFalha * (1 + margem);
+        
+        // Adicionar taxas de plataforma
+        let taxa = 0;
+        if(plataforma === 'elo7') { taxa = (precoSugerido * 0.12) + 1.5; precoSugerido += taxa; }
+        else if(plataforma === 'mercado') { taxa = (precoSugerido * 0.16) + 5; precoSugerido += taxa; }
+        else if(plataforma === 'shopee') { taxa = (precoSugerido * 0.20); precoSugerido += taxa; }
+
+        const lucroLíquido = precoSugerido - custoComFalha - taxa;
+
+        calculoAtual = {
+            nome: document.getElementById('prod_nome').value || "Sem nome",
+            peso: peso,
+            tempo: tempo,
+            plataforma: plataforma,
+            custoTotal: custoComFalha.toFixed(2),
+            precoVenda: precoSugerido.toFixed(2),
+            lucroReal: lucroLíquido.toFixed(2),
+            margemPorcentagem: document.getElementById('prod_margem').value + "%",
+            data: new Date()
+        };
+
+        // Mostrar no box
+        document.getElementById('res_preco_venda').innerText = `Sugestão: R$ ${precoSugerido.toFixed(2)}`;
+        document.getElementById('res_custo').innerText = `R$ ${custoComFalha.toFixed(2)}`;
+        document.getElementById('res_lucro').innerText = `R$ ${lucroLíquido.toFixed(2)}`;
+        document.getElementById('res_mat').innerText = `R$ ${custoMat.toFixed(2)}`;
+        document.getElementById('res_taxa').innerText = `R$ ${taxa.toFixed(2)}`;
+        document.getElementById('box_resultado').classList.remove('hidden');
+    }
+
+    function salvarVenda() {
+        if(!calculoAtual) return;
+        
+        vendas.unshift(calculoAtual);
+        localStorage.setItem('inovafam_vendas', JSON.stringify(vendas));
+
+        // Enviar para o Google Sheets (se houver URL)
+        if(config.url) {
+            fetch(config.url, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(calculoAtual)
+            });
+        }
+
+        alert("Venda salva com sucesso!");
+        document.getElementById('box_resultado').classList.add('hidden');
+        renderVendas();
+    }
+
+    function renderVendas() {
+        const div = document.getElementById('lista_vendas');
+        if(vendas.length === 0) { div.innerHTML = "<p>Nenhuma venda registrada.</p>"; return; }
+        
+        div.innerHTML = vendas.map(v => `
+            <div class="history-item">
+                <div>
+                    <b>${v.nome}</b><br>
+                    <small>${new Date(v.data).toLocaleDateString()} - ${v.plataforma}</small>
+                </div>
+                <div style="text-align:right">
+                    <b style="color: green">R$ ${v.precoVenda}</b><br>
+                    <small>Lucro: R$ ${v.lucroReal}</small>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function atualizarAnalise() {
+        const mesAtual = new Date().getMonth();
+        const vendasMes = vendas.filter(v => new Date(v.data).getMonth() === mesAtual);
+        
+        const faturamento = vendasMes.reduce((acc, v) => acc + parseFloat(v.precoVenda), 0);
+        const lucro = vendasMes.reduce((acc, v) => acc + parseFloat(v.lucroReal), 0);
+
+        document.getElementById('stat_vendas').innerText = vendasMes.length;
+        document.getElementById('stat_faturamento').innerText = `R$ ${faturamento.toFixed(2)}`;
+        document.getElementById('stat_lucro').innerText = `R$ ${lucro.toFixed(2)}`;
+    }
+
+    function showTab(tab) {
+        document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tab).classList.remove('hidden');
+        event.target.classList.add('active');
+        
+        if(tab === 'config') carregarCamposConfig();
+        if(tab === 'history') renderVendas();
+        if(tab === 'analysis') atualizarAnalise();
+    }
+
+    function limparLocal() {
+        if(confirm("Deseja limpar o histórico local? (Isso não apaga a planilha do Google)")) {
+            vendas = [];
+            localStorage.removeItem('inovafam_vendas');
+            renderVendas();
+        }
+    }
+</script>
+
+</body>
+</html>
