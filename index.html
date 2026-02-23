@@ -9,19 +9,16 @@
         body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; padding: 20px; color: #e2e2e2; }
         .container { max-width: 1100px; margin: 0 auto; }
         .logo-container { text-align: center; margin-bottom: 20px; }
-        .logo-img { max-width: 180px; height: auto; border-radius: 15px; background: white; padding: 10px; }
+        .logo-img { max-width: 180px; height: auto; border-radius: 15px; background: white; padding: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         
-        /* Navegação */
         .nav { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; flex-wrap: wrap; }
         .nav-btn { padding: 10px 18px; border: none; border-radius: 20px; background: #0f3460; color: white; cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 0.9em; }
         .nav-btn.active { background: #4ecca3; color: #1a1a2e; }
 
-        /* Cards */
         .card { background: #16213e; border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
         h3 { margin-bottom: 15px; color: #4ecca3; border-bottom: 1px solid #0f3460; padding-bottom: 5px; }
         
-        /* Formulários */
         .input-group { margin-bottom: 15px; }
         label { display: block; font-weight: 600; margin-bottom: 5px; color: #4ecca3; font-size: 0.85em; }
         input, select { width: 100%; padding: 12px; border: 1px solid #0f3460; border-radius: 10px; background: #1a1a2e; color: white; font-size: 16px; outline: none; }
@@ -29,16 +26,16 @@
         
         .btn { width: 100%; background: #4ecca3; color: #1a1a2e; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 5px; }
         .btn:hover { background: #45b393; transform: translateY(-2px); }
-        .btn-danger { background: #e94560; color: white; margin-top: 10px; padding: 8px; font-size: 0.8em; }
+        .btn-danger { background: #e94560; color: white; margin-top: 10px; padding: 8px; font-size: 0.8em; border:none; border-radius:5px; cursor:pointer; }
 
-        /* Tabelas e Listas */
         .res-box { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-top: 20px; border-left: 5px solid #4ecca3; }
         .history-item { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
         .hidden { display: none !important; }
         
-        /* Login */
         #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; }
-        .login-card { background: white; padding: 40px; border-radius: 20px; width: 100%; max-width: 400px; color: #333; }
+        .login-card { background: white; padding: 40px; border-radius: 20px; width: 100%; max-width: 400px; color: #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .stat-card { background: #0f3460; padding: 20px; border-radius: 15px; text-align: center; }
+        .stat-val { font-size: 1.8em; font-weight: bold; color: #4ecca3; }
     </style>
 </head>
 <body>
@@ -47,15 +44,15 @@
     <div class="logo-container"><img src="logo.png.jfif" class="logo-img" onerror="this.style.display='none'"></div>
     <div class="login-card">
         <h2 style="text-align:center; margin-bottom:20px;">InovaFam3D 🔐</h2>
-        <input type="password" id="pass-input" placeholder="Senha da Empresa" style="background:#f4f4f4; color:#333; border:1px solid #ddd; margin-bottom:15px;">
-        <button class="btn" onclick="checkLogin()">ACESSAR</button>
+        <input type="password" id="pass-input" placeholder="Senha da Empresa" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:10px;">
+        <button class="btn" onclick="checkLogin()">ACESSAR SISTEMA</button>
     </div>
 </div>
 
 <div id="main-content" class="container hidden">
     <div class="header" style="text-align:center; margin-bottom:20px;">
         <h1 style="color:#4ecca3">InovaFam3D</h1>
-        <button onclick="logout()" style="background:none; border:none; color:#888; cursor:pointer; text-decoration:underline; font-size:0.8em;">Sair do Sistema</button>
+        <button onclick="logout()" style="background:none; border:none; color:#888; cursor:pointer; text-decoration:underline; font-size:0.8em;">Sair / Logout</button>
     </div>
 
     <div class="nav">
@@ -100,14 +97,13 @@
                 <input type="number" id="venda_margem" value="100" oninput="previewVenda()">
             </div>
         </div>
-        <div id="res_venda" class="res-box hidden">
-            </div>
+        <div id="res_venda" class="res-box hidden"></div>
     </div>
 
     <div id="produtos" class="card hidden">
         <h3>📦 Cadastro de Produtos</h3>
         <div class="grid">
-            <div class="input-group"><label>Nome do Produto:</label><input type="text" id="p_nome" placeholder="Ex: Vaso Articulado"></div>
+            <div class="input-group"><label>Nome do Produto:</label><input type="text" id="p_nome"></div>
             <div class="input-group">
                 <label>Tipo de Filamento:</label>
                 <select id="p_tipo">
@@ -129,33 +125,34 @@
         <div class="grid">
             <div>
                 <h3>💰 Preço Filamento (R$/kg)</h3>
-                <div class="input-group"><label>PLA:</label><input type="number" id="c_pla" value="95"></div>
-                <div class="input-group"><label>PETG:</label><input type="number" id="c_petg" value="90"></div>
-                <div class="input-group"><label>ABS:</label><input type="number" id="c_abs" value="80"></div>
-                <div class="input-group"><label>TPU:</label><input type="number" id="c_tpu" value="150"></div>
-                <div class="input-group"><label>ASA:</label><input type="number" id="c_asa" value="120"></div>
+                <div class="input-group"><label>PLA:</label><input type="number" id="c_pla"></div>
+                <div class="input-group"><label>PETG:</label><input type="number" id="c_petg"></div>
+                <div class="input-group"><label>ABS:</label><input type="number" id="c_abs"></div>
+                <div class="input-group"><label>TPU:</label><input type="number" id="c_tpu"></div>
+                <div class="input-group"><label>ASA:</label><input type="number" id="c_asa"></div>
             </div>
             <div>
                 <h3>📢 Custos de ADS (R$ por venda)</h3>
-                <div class="input-group"><label>Google Shop:</label><input type="number" id="ads_google" value="2.00"></div>
-                <div class="input-group"><label>Instagram:</label><input type="number" id="ads_insta" value="1.50"></div>
-                <div class="input-group"><label>Facebook:</label><input type="number" id="ads_face" value="1.50"></div>
-                <div class="input-group"><label>TikTok:</label><input type="number" id="ads_tik" value="1.00"></div>
-                <div class="input-group"><label>Shopee ADS:</label><input type="number" id="ads_shop" value="0.80"></div>
+                <div class="input-group"><label>Google Shop:</label><input type="number" id="ads_google"></div>
+                <div class="input-group"><label>Instagram:</label><input type="number" id="ads_insta"></div>
+                <div class="input-group"><label>Facebook:</label><input type="number" id="ads_face"></div>
+                <div class="input-group"><label>TikTok:</label><input type="number" id="ads_tik"></div>
+                <div class="input-group"><label>Shopee ADS:</label><input type="number" id="ads_shop"></div>
             </div>
             <div>
                 <h3>⚡ Outros Custos</h3>
-                <div class="input-group"><label>Energia (R$/kWh):</label><input type="number" id="c_luz" value="0.95"></div>
-                <div class="input-group"><label>Embalagem (R$):</label><input type="number" id="c_emb" value="3.50"></div>
-                <div class="input-group"><label>Watts Impressora:</label><input type="number" id="c_watts" value="250"></div>
+                <div class="input-group"><label>Energia (R$/kWh):</label><input type="number" id="c_luz"></div>
+                <div class="input-group"><label>Embalagem (R$):</label><input type="number" id="c_emb"></div>
+                <div class="input-group"><label>Watts Impressora:</label><input type="number" id="c_watts"></div>
             </div>
         </div>
-        <button class="btn" onclick="saveConfigs()">SALVAR TODAS AS CONFIGURAÇÕES</button>
+        <button class="btn" onclick="saveConfigs()">SALVAR CONFIGURAÇÕES</button>
     </div>
 
     <div id="history" class="card hidden">
-        <h3>📋 Histórico de Vendas</h3>
+        <h3>📋 Histórico Local</h3>
         <div id="lista_vendas"></div>
+        <button class="btn-danger" onclick="limparHistorico()" style="width:100%">Limpar Cache Local</button>
     </div>
 
     <div id="analysis" class="card hidden">
@@ -171,16 +168,19 @@
 <script>
     const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbycyHpnL4YYf_kyuvdne82MqWPFt_LL19bS40H6ba3yvs6nhVWBmL1mBZ_e_qOGJWcV/exec";
     
+    // CONFIGURAÇÃO INICIAL COM NOVA SENHA
     let config = JSON.parse(localStorage.getItem('inova_cfg')) || {
         pla:95, petg:90, abs:80, tpu:150, asa:120,
         ads_google:2, ads_insta:1.5, ads_face:1.5, ads_tik:1, ads_shop:0.8,
-        luz:0.95, emb:3.5, watts:250, pass:"15@0117InovaFam"
+        luz:0.95, emb:3.5, watts:250, pass:"15@0117Inova"
     };
+    
+    // Força atualização da senha se o código for atualizado
+    config.pass = "15@0117Inova";
 
     let produtos = JSON.parse(localStorage.getItem('inova_prods')) || [];
     let vendas = JSON.parse(localStorage.getItem('inova_vendas')) || [];
 
-    // LOGIN
     function checkLogin() {
         if(document.getElementById('pass-input').value === config.pass) {
             document.getElementById('login-screen').classList.add('hidden');
@@ -189,7 +189,7 @@
         } else { alert("Senha incorreta!"); }
     }
 
-    function logout() { localStorage.removeItem('inova_auth'); location.reload(); }
+    function logout() { location.reload(); }
 
     function init() {
         renderProdsDropdown();
@@ -197,19 +197,19 @@
         loadConfigInputs();
     }
 
-    // GESTÃO DE PRODUTOS
     function addProduto() {
         const p = {
             id: Date.now(),
             nome: document.getElementById('p_nome').value,
             tipo: document.getElementById('p_tipo').value,
-            peso: parseFloat(document.getElementById('p_peso').value),
-            tempo: parseFloat(document.getElementById('p_tempo').value)
+            peso: parseFloat(document.getElementById('p_peso').value) || 0,
+            tempo: parseFloat(document.getElementById('p_tempo').value) || 0
         };
+        if(!p.nome) return alert("Preencha o nome!");
         produtos.push(p);
         localStorage.setItem('inova_prods', JSON.stringify(produtos));
         init();
-        alert("Produto salvo!");
+        alert("Salvo!");
     }
 
     function deleteProd(id) {
@@ -218,7 +218,6 @@
         init();
     }
 
-    // GESTÃO DE CUSTOS
     function saveConfigs() {
         config.pla = parseFloat(document.getElementById('c_pla').value);
         config.petg = parseFloat(document.getElementById('c_petg').value);
@@ -234,16 +233,25 @@
         config.emb = parseFloat(document.getElementById('c_emb').value);
         config.watts = parseFloat(document.getElementById('c_watts').value);
         localStorage.setItem('inova_cfg', JSON.stringify(config));
-        alert("Configurações salvas!");
+        alert("Salvo!");
     }
 
     function loadConfigInputs() {
         document.getElementById('c_pla').value = config.pla;
+        document.getElementById('c_petg').value = config.petg;
+        document.getElementById('c_abs').value = config.abs;
+        document.getElementById('c_tpu').value = config.tpu;
+        document.getElementById('c_asa').value = config.asa;
         document.getElementById('ads_google').value = config.ads_google;
-        // ... carregar os demais campos se necessário ...
+        document.getElementById('ads_insta').value = config.ads_insta;
+        document.getElementById('ads_face').value = config.ads_face;
+        document.getElementById('ads_tik').value = config.ads_tik;
+        document.getElementById('ads_shop').value = config.ads_shop;
+        document.getElementById('c_luz').value = config.luz;
+        document.getElementById('c_emb').value = config.emb;
+        document.getElementById('c_watts').value = config.watts;
     }
 
-    // CÁLCULO DE VENDA
     function previewVenda() {
         const pId = document.getElementById('sel_prod').value;
         if(!pId) return;
@@ -252,50 +260,45 @@
         const platTipo = document.getElementById('sel_plat').value;
         const margem = parseFloat(document.getElementById('venda_margem').value) / 100;
 
-        // Custos
-        let precoMaterial = 0;
-        if(p.tipo === 'PLA') precoMaterial = config.pla;
-        else if(p.tipo === 'PETG') precoMaterial = config.petg;
-        else if(p.tipo === 'ABS') precoMaterial = config.abs;
-        else if(p.tipo === 'TPU') precoMaterial = config.tpu;
-        else if(p.tipo === 'ASA') precoMaterial = config.asa;
-
-        const custoFilamento = (p.peso / 1000) * precoMaterial;
-        const custoEnergia = (config.watts / 1000) * p.tempo * config.luz;
-        let custoAds = 0;
-        if(adsTipo === 'google') custoAds = config.ads_google;
-        else if(adsTipo === 'instagram') custoAds = config.ads_insta;
-        else if(adsTipo === 'facebook') custoAds = config.ads_face;
-        else if(adsTipo === 'tiktok') custoAds = config.ads_tik;
-        else if(adsTipo === 'shopee_ads') custoAds = config.ads_shop;
-
-        const custoProducao = custoFilamento + custoEnergia + config.emb + custoAds;
+        let precoMat = config[p.tipo.toLowerCase()];
+        const custoFil = (p.peso / 1000) * precoMat;
+        const custoLuz = (config.watts / 1000) * p.tempo * config.luz;
         
-        let precoFinal = custoProducao * (1 + margem);
-        let taxaPlat = 0;
-        if(platTipo === 'elo7') { taxaPlat = (precoFinal * 0.12) + 1.5; precoFinal += taxaPlat; }
-        else if(platTipo === 'ml') { taxaPlat = (precoFinal * 0.16) + 5; precoFinal += taxaPlat; }
-        else if(platTipo === 'shopee') { taxaPlat = (precoFinal * 0.20); precoFinal += taxaPlat; }
+        let custoAds = 0;
+        if(adsTipo !== 'direta') custoAds = config['ads_' + adsTipo] || 0;
+        if(adsTipo === 'google') custoAds = config.ads_google;
 
-        const lucro = precoFinal - custoProducao - taxaPlat;
+        const custoProd = custoFil + custoLuz + config.emb + custoAds;
+        let precoFin = custoProd * (1 + margem);
+        
+        if(platTipo === 'elo7') precoFin = (precoFin + 1.5) / 0.88;
+        else if(platTipo === 'ml') precoFin = (precoFin + 5) / 0.84;
+        else if(platTipo === 'shopee') precoFin = precoFin / 0.80;
+
+        const lucro = precoFin - custoProd - (precoFin - (precoFin * (platTipo === 'pix' ? 1 : (platTipo === 'elo7' ? 0.88 : (platTipo === 'ml' ? 0.84 : 0.80)))));
 
         const res = document.getElementById('res_venda');
         res.classList.remove('hidden');
         res.innerHTML = `
-            <div style="font-size:1.4em; font-weight:bold; color:#4ecca3">Preço Sugerido: R$ ${precoFinal.toFixed(2)}</div>
-            <p>Custo Total: R$ ${(custoProducao + taxaPlat).toFixed(2)} | Lucro: R$ ${lucro.toFixed(2)}</p>
-            <button class="btn" style="background:#28a745; color:white; margin-top:15px;" onclick="confirmarVenda(${precoFinal.toFixed(2)}, ${lucro.toFixed(2)}, ${custoAds})">CONFIRMAR VENDA</button>
+            <div style="font-size:1.4em; font-weight:bold; color:#4ecca3">Preço Sugerido: R$ ${precoFin.toFixed(2)}</div>
+            <p>Lucro Estimado: R$ ${(precoFin - custoProd - (precoFin * (platTipo === 'pix' ? 0 : (platTipo === 'elo7' ? 0.12 : (platTipo === 'ml' ? 0.16 : 0.20)))) - (platTipo === 'elo7' ? 1.5 : (platTipo === 'ml' ? 5 : 0))).toFixed(2)}</p>
+            <button class="btn" style="background:#28a745; color:white; margin-top:15px;" onclick="confirmarVenda(${precoFin.toFixed(2)}, ${custoAds})">SALVAR VENDA</button>
         `;
     }
 
-    function confirmarVenda(preco, lucro, ads) {
+    function confirmarVenda(preco, ads) {
         const pId = document.getElementById('sel_prod').value;
         const p = produtos.find(prod => prod.id == pId);
+        const platTipo = document.getElementById('sel_plat').value;
+        
+        let taxa = preco * (platTipo === 'pix' ? 0 : (platTipo === 'elo7' ? 0.12 : (platTipo === 'ml' ? 0.16 : 0.20))) + (platTipo === 'elo7' ? 1.5 : (platTipo === 'ml' ? 5 : 0));
+        let lucroCalculado = preco - taxa - ( (p.peso/1000)*config[p.tipo.toLowerCase()] + (config.watts/1000)*p.tempo*config.luz + config.emb + ads );
+
         const venda = {
             data: new Date().toLocaleDateString(),
             nome: p.nome,
             preco: preco,
-            lucro: lucro,
+            lucro: lucroCalculado,
             ads: ads,
             mes: new Date().getMonth()
         };
@@ -306,7 +309,6 @@
         showTab('history');
     }
 
-    // RENDERIZADORES
     function renderProdsDropdown() {
         const sel = document.getElementById('sel_prod');
         sel.innerHTML = '<option value="">-- Escolha um produto --</option>' + 
@@ -316,7 +318,7 @@
     function renderProdsLista() {
         document.getElementById('lista_p').innerHTML = produtos.map(p => `
             <div class="history-item">
-                <span><b>${p.nome}</b> - ${p.tipo} (${p.peso}g / ${p.tempo}h)</span>
+                <span><b>${p.nome}</b> (${p.tipo})</span>
                 <button class="btn-danger" onclick="deleteProd(${p.id})">Remover</button>
             </div>
         `).join('');
@@ -346,6 +348,14 @@
         event.target.classList.add('active');
         if(tab === 'history') renderHistory();
         if(tab === 'analysis') renderAnalysis();
+    }
+
+    function limparHistorico() {
+        if(confirm("Deseja apagar o histórico local?")) {
+            vendas = [];
+            localStorage.setItem('inova_vendas', JSON.stringify(vendas));
+            renderHistory();
+        }
     }
 </script>
 </body>
