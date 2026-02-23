@@ -3,152 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InovaFam3D - ERP v6.4</title>
+    <title>InovaFam3D - Luxury ERP</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg: #0d1117; --card: #161b22; --border: #30363d;
-            --primary: #58a6ff; --success: #3fb950; --danger: #f85149;
-            --text: #c9d1d9; --gold: #d299ff;
+            --bg-main: #000000; --bg-card: #1c1c1e; --border: #38383a;
+            --primary: #58a6ff; --success: #30d158; --danger: #ff453a;
+            --text-p: #ffffff; --text-s: #8e8e93; --gold: #ffd60a;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background: var(--bg); color: var(--text); min-height: 100vh; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 15px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background: var(--bg-main); color: var(--text-p); -webkit-font-smoothing: antialiased; }
+        .container { max-width: 1300px; margin: 0 auto; padding: 20px; }
 
-        /* Login Screen */
-        #login-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 10000; }
-        .login-card { background: var(--card); padding: 40px; border-radius: 20px; border: 1px solid var(--border); width: 380px; text-align: center; }
-        .user-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
-        .user-btn { background: #21262d; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 10px; cursor: pointer; font-size: 0.85em; font-weight: 600; }
-        .user-btn.active { border-color: var(--primary); background: rgba(88,166,255,0.15); color: var(--primary); }
+        /* Login Premium */
+        #login-screen { position: fixed; inset: 0; background: var(--bg-main); display: flex; align-items: center; justify-content: center; z-index: 10000; }
+        .login-card { background: var(--bg-card); padding: 45px; border-radius: 30px; border: 1px solid var(--border); width: 400px; text-align: center; }
+        .user-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 25px 0; }
+        .user-btn { background: #2c2c2e; border: 1px solid var(--border); color: white; padding: 18px; border-radius: 18px; cursor: pointer; transition: 0.3s; font-size: 0.9em; font-weight: 600; }
+        .user-btn.active { border-color: var(--primary); background: rgba(88,166,255,0.2); color: var(--primary); }
         
-        /* Dashboard & UI */
-        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .kpi-card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); border-left: 4px solid var(--primary); }
-        .kpi-card h2 { margin-top: 5px; font-size: 1.5em; }
+        /* Dashboard High-Tech */
+        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .kpi-card { background: var(--bg-card); padding: 24px; border-radius: 22px; border: 1px solid var(--border); transition: transform 0.2s; }
+        .kpi-card:hover { transform: scale(1.02); }
+        .kpi-card span { font-size: 0.75em; color: var(--text-s); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+        .kpi-card h2 { font-size: 1.8em; margin-top: 8px; font-weight: 700; }
 
-        .nav { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
-        .nav-btn { padding: 10px 18px; border: 1px solid var(--border); background: var(--card); color: #8b949e; cursor: pointer; border-radius: 8px; font-weight: 600; white-space: nowrap; }
-        .nav-btn.active { background: var(--primary); color: #0d1117; border-color: var(--primary); }
+        /* Navigation Apple Style */
+        .nav { display: flex; gap: 12px; margin-bottom: 30px; overflow-x: auto; padding: 5px; }
+        .nav-btn { padding: 12px 24px; border: none; background: var(--bg-card); color: var(--text-s); cursor: pointer; border-radius: 14px; font-weight: 600; white-space: nowrap; border: 1px solid var(--border); transition: 0.3s; }
+        .nav-btn.active { background: var(--text-p); color: var(--bg-main); border-color: var(--text-p); }
 
-        .card { background: var(--card); border-radius: 16px; padding: 20px; border: 1px solid var(--border); margin-bottom: 20px; }
-        .input-group { margin-bottom: 12px; }
-        label { display: block; font-size: 0.75em; color: var(--primary); margin-bottom: 4px; font-weight: bold; }
-        input, select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: #0d1117; color: white; outline: none; }
-        .btn-main { background: var(--primary); color: #0d1117; border: none; padding: 14px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
+        /* Cards & Form */
+        .card { background: var(--bg-card); border-radius: 24px; padding: 25px; border: 1px solid var(--border); margin-bottom: 25px; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.8em; color: var(--primary); margin-bottom: 8px; font-weight: 700; }
+        input, select { width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: #000000; color: white; font-size: 1em; }
         
+        /* Matrix Decision Table */
+        .matrix-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        .matrix-table th { text-align: left; padding: 12px; color: var(--text-s); font-size: 0.7em; text-transform: uppercase; }
+        .matrix-table td { background: #2c2c2e; padding: 18px; font-size: 0.95em; }
+        .matrix-table td:first-child { border-radius: 15px 0 0 15px; font-weight: 800; }
+        .matrix-table td:last-child { border-radius: 0 15px 15px 0; }
+        
+        .btn-sell { background: var(--success); color: white; border: none; padding: 10px 18px; border-radius: 12px; font-weight: bold; cursor: pointer; }
         .hidden { display: none !important; }
-        .frete-info { background: #21262d; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 0.85em; border-left: 3px solid var(--gold); }
+        .btn-main { background: var(--primary); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1.1em; }
+        .frete-badge { background: rgba(255,214,10,0.15); color: var(--gold); padding: 12px; border-radius: 12px; margin-top: 15px; font-size: 0.85em; border: 1px solid var(--gold); }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
     <div class="login-card">
-        <h1 style="color: var(--primary);">InovaFam3D</h1>
-        <p style="font-size: 0.75em; opacity: 0.6; margin-bottom: 10px;">ERP v6.4 - LOGÍSTICA</p>
+        <img src="logo.png.jfif" style="max-width: 140px; margin-bottom: 15px; border-radius: 15px;" onerror="this.style.display='none'">
+        <h1 style="font-weight: 800; letter-spacing: -1px;">InovaFam3D</h1>
+        <p style="font-size: 0.8em; color: var(--text-s); margin-top: 5px;">ENTERPRISE SOLUTION v7.0</p>
         
         <div class="user-grid">
-            <button class="user-btn active" id="btn-marcelo" onclick="selectUser('Marcelo')"><i class="fas fa-user"></i> Marcelo</button>
-            <button class="user-btn" id="btn-fernanda" onclick="selectUser('Fernanda')"><i class="fas fa-user-friends"></i> Fernanda</button>
+            <button class="user-btn active" id="btn-marcelo" onclick="selectUser('Marcelo')">Marcelo</button>
+            <button class="user-btn" id="btn-fernanda" onclick="selectUser('Fernanda')">Fernanda</button>
         </div>
         
-        <input type="password" id="pass-input" placeholder="Sua Senha Pessoal">
-        <button class="btn-main" onclick="authenticate()">ENTRAR</button>
-        <button onclick="hardReset()" style="margin-top: 20px; background: none; border: none; color: #555; font-size: 11px; cursor: pointer; text-decoration: underline;">Limpar Tudo (Reset)</button>
+        <input type="password" id="pass-input" placeholder="Senha Pessoal">
+        <button class="btn-main" onclick="authenticate()">LOG IN</button>
+        <button onclick="hardReset()" style="margin-top: 25px; background: none; border: none; color: var(--text-s); font-size: 10px; cursor: pointer; text-decoration: underline;">Limpar Dados do Navegador</button>
     </div>
 </div>
 
 <div id="app" class="container hidden">
-    <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 id="welcome-msg" style="color: var(--primary);">Olá</h2>
-        <button onclick="logout()" style="background:none; border:none; color: var(--danger); cursor:pointer;">SAIR</button>
+    <header style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; padding: 0 10px;">
+        <div>
+            <h2 id="welcome-msg" style="font-size: 2em; font-weight: 800;">Olá,</h2>
+            <p id="current-date" style="color: var(--text-s); font-size: 0.9em;"></p>
+        </div>
+        <button onclick="logout()" style="background:none; border:none; color: var(--danger); font-weight: 700; cursor:pointer;">Encerrar Sessão</button>
     </header>
 
     <div class="kpi-row">
         <div class="kpi-card"><span>Faturamento</span><h2 id="kpi-fat">R$ 0,00</h2></div>
-        <div class="kpi-card" style="border-color: var(--success)"><span>Lucro Real</span><h2 id="kpi-luc">R$ 0,00</h2></div>
-        <div class="kpi-card" style="border-color: var(--gold)"><span>Vendas</span><h2 id="kpi-vol">0</h2></div>
+        <div class="kpi-card" style="border-color: var(--success)"><span>Lucro Líquido</span><h2 id="kpi-luc">R$ 0,00</h2></div>
+        <div class="kpi-card" style="border-color: var(--gold)"><span>Itens Vendidos</span><h2 id="kpi-vol">0</h2></div>
     </div>
 
     <nav class="nav">
-        <button class="nav-btn active" onclick="showTab('dash', this)">DASHBOARD</button>
-        <button class="nav-btn" onclick="showTab('calc', this)">CALCULADORA</button>
-        <button class="nav-btn" onclick="showTab('items', this)">CATÁLOGO</button>
-        <button class="nav-btn" onclick="showTab('report', this)">HISTÓRICO</button>
-        <button class="nav-btn" onclick="showTab('config', this)">CONFIG</button>
+        <button class="nav-btn active" onclick="showTab('dash', this)">Dashboard</button>
+        <button class="nav-btn" onclick="showTab('calc', this)">Calculadora Pro</button>
+        <button class="nav-btn" onclick="showTab('items', this)">Catálogo</button>
+        <button class="nav-btn" onclick="showTab('report', this)">Histórico/Logs</button>
+        <button class="nav-btn" onclick="showTab('config', this)">Ajustes</button>
     </nav>
 
-    <div id="tab-dash" class="tab-content">
-        <div class="card"><h3>Performance Mensal</h3><canvas id="mainChart" height="120"></canvas></div>
-    </div>
-
     <div id="tab-calc" class="tab-content hidden">
-        <div class="card">
-            <h3>Calculadora & Logística</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="input-group"><label>Peça</label><select id="calc_prod" onchange="runEngine()"></select></div>
-                <div class="input-group"><label>Plataforma</label><select id="calc_plat" onchange="runEngine()"><option value="pix">PIX / Direta</option><option value="elo7">Elo7</option><option value="ml">Mercado Livre</option><option value="shopee">Shopee</option></select></div>
-            </div>
-            
-            <div style="border-top: 1px solid var(--border); padding-top: 15px; margin-top: 10px;">
-                <label><i class="fas fa-truck"></i> Simular Frete (Venda Direta)</label>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="calc_cep" placeholder="Digite o CEP" maxlength="8">
-                    <button class="user-btn" onclick="consultarCEP()" style="padding: 0 15px;">Buscar</button>
+        <div class="grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+            <div class="card">
+                <h3>Configuração de Venda</h3>
+                <div class="input-group" style="margin-top:20px;">
+                    <label>1. Selecione o Produto do Catálogo</label>
+                    <select id="calc_prod" onchange="runEngine()"></select>
                 </div>
-                <div id="frete-res" class="frete-info hidden"></div>
+                <div class="input-group">
+                    <label>2. Canal de Venda (Taxas)</label>
+                    <select id="calc_plat" onchange="runEngine()">
+                        <option value="pix">Venda Direta / PIX (0%)</option>
+                        <option value="elo7">Elo7 (12% + R$ 1.50)</option>
+                        <option value="ml">Mercado Livre (16% + R$ 5.00)</option>
+                        <option value="shopee">Shopee (20%)</option>
+                    </select>
+                </div>
+                <div style="border-top: 1px solid var(--border); padding-top: 15px;">
+                    <label>3. Simular Logística (Venda Direta)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="calc_cep" placeholder="Digite o CEP destino" maxlength="8">
+                        <button class="user-btn" onclick="consultarCEP()" style="padding: 0 20px;">Buscar</button>
+                    </div>
+                    <div id="frete-res" class="frete-badge hidden"></div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Matriz de Precificação</h3>
+                <table class="matrix-table">
+                    <thead><tr><th>MARGEM</th><th>VENDA BRUTA</th><th>LUCRO LÍQ.</th><th>AÇÃO</th></tr></thead>
+                    <tbody id="matrix-body"></tbody>
+                </table>
+                <p style="font-size: 0.7em; color: var(--text-s); margin-top: 15px; text-align: center;">* O cálculo utilizaMarkup Divisor para garantir lucro real sobre as taxas.</p>
             </div>
         </div>
-        <div class="card"><table style="width:100%"><tbody id="matrix-body"></tbody></table></div>
+    </div>
+
+    <div id="tab-dash" class="tab-content">
+        <div class="card">
+            <h3>Fluxo de Caixa Mensal</h3>
+            <canvas id="mainChart" height="120"></canvas>
+        </div>
     </div>
 
     <div id="tab-items" class="tab-content hidden">
         <div class="card">
-            <h3>Novo Cadastro</h3>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <input type="text" id="p_nome" placeholder="Nome">
-                <select id="p_tipo"><option value="pla">PLA</option><option value="petg">PETG</option></select>
+            <h3>Gestão de Modelos</h3>
+            <div style="display:grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap:12px; margin-top: 20px;">
+                <input type="text" id="p_nome" placeholder="Nome da Peça">
+                <select id="p_tipo"><option value="pla">Filamento PLA</option><option value="petg">Filamento PETG</option></select>
                 <input type="number" id="p_peso" placeholder="Peso (g)">
-                <input type="number" id="p_tempo" placeholder="Tempo (h)">
+                <input type="number" id="p_tempo" placeholder="Tempo (h)" step="0.1">
             </div>
-            <button class="btn-main" onclick="saveToCatalog()" style="margin-top:15px">SALVAR</button>
+            <button class="btn-main" onclick="saveToCatalog()" style="margin-top:20px;">CADASTRAR ITEM</button>
         </div>
         <div id="catalog-list"></div>
     </div>
 
     <div id="tab-report" class="tab-content hidden">
         <div class="card">
-            <select id="filter-month" onchange="refreshBI()" style="margin-bottom:15px;"></select>
-            <table style="width:100%;"><thead><tr><th>Data</th><th>Item</th><th>Venda</th><th>Usuário</th><th>Ação</th></tr></thead><tbody id="report-body"></tbody></table>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                <h3>Logs de Auditoria e Vendas</h3>
+                <select id="filter-month" onchange="refreshBI()" style="width:140px;"></select>
+            </div>
+            <table style="width:100%;">
+                <thead><tr><th>Data</th><th>Item</th><th>Plat</th><th>Usuário</th><th>Ações</th></tr></thead>
+                <tbody id="report-body"></tbody>
+            </table>
         </div>
     </div>
 
     <div id="tab-config" class="tab-content hidden">
         <div class="card">
-            <h3>Alterar Minha Senha</h3>
-            <p style="font-size: 0.8em; color: var(--gold); margin-bottom: 10px;">Logado como: <b id="current-user-tag"></b></p>
-            <div class="input-group"><label>Nova Senha Pessoal</label><input type="password" id="new-pass" placeholder="Mudar minha senha"></div>
-            <button class="btn-main" onclick="updateMyPassword()">ATUALIZAR MINHA SENHA</button>
+            <h3>Segurança Individual</h3>
+            <div class="input-group" style="margin-top:15px;"><label>Redefinir Senha de <b id="user-tag"></b></label><input type="password" id="new-pass" placeholder="Nova Senha"></div>
+            <button class="btn-main" onclick="updateMyPassword()">ATUALIZAR SENHA</button>
         </div>
         <div class="card">
-            <h3>Custos</h3>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-                <input type="number" id="c_pla"> <input type="number" id="c_petg">
-                <input type="number" id="c_luz"> <input type="number" id="c_dep">
+            <h3>Custos de Insumos</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-top:15px;">
+                <div><label>PLA (R$/kg)</label><input type="number" id="c_pla"></div>
+                <div><label>PETG (R$/kg)</label><input type="number" id="c_petg"></div>
+                <div><label>Energia (kWh)</label><input type="number" id="c_luz"></div>
+                <div><label>Manut. (R$/h)</label><input type="number" id="c_dep"></div>
             </div>
-            <button class="btn-main" onclick="saveConfigs()" style="margin-top:15px;">SALVAR CUSTOS</button>
+            <button class="btn-main" onclick="saveConfigs()" style="margin-top:20px;">SALVAR PARÂMETROS</button>
         </div>
     </div>
 </div>
 
 <script>
     const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbycyHpnL4YYf_kyuvdne82MqWPFt_LL19bS40H6ba3yvs6nhVWBmL1mBZ_e_qOGJWcV/exec";
-    const DB_KEY = 'inova_v6_4_stable';
+    const DB_KEY = 'inova_v7_final';
     
     let state = {
-        cfg: { pla:110, petg:100, luz:0.95, dep:2.5, watts:280, emb:4.5, falha:10, passMarcelo:"15@0117Inova", passFernanda:"15@0117Inova" },
+        cfg: { pla:110, petg:100, luz:0.95, dep:3.0, watts:280, emb:5.0, falha:10, passMarcelo:"15@0117Inova", passFernanda:"15@0117Inova" },
         catalog: [], history: [], currentUser: "Marcelo"
     };
 
@@ -166,23 +209,22 @@
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('app').classList.remove('hidden');
             document.getElementById('welcome-msg').innerText = "Olá, " + state.currentUser;
-            document.getElementById('current-user-tag').innerText = state.currentUser;
+            document.getElementById('user-tag').innerText = state.currentUser;
             init();
         } else { alert("Senha incorreta para " + state.currentUser); }
     }
 
-    function updateMyPassword() {
-        const newPass = document.getElementById('new-pass').value;
-        if(!newPass) return alert("Digite a nova senha");
-        const passKey = state.currentUser === 'Marcelo' ? 'passMarcelo' : 'passFernanda';
-        state.cfg[passKey] = newPass;
-        saveState();
-        alert("Senha de " + state.currentUser + " alterada com sucesso!");
+    function init() {
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+        const months = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+        document.getElementById('filter-month').innerHTML = months.map((n, i) => `<option value="${i}" ${i === new Date().getMonth() ? 'selected' : ''}>${n}</option>`).join('');
+        loadInputs(); refreshBI(); updateDropdown();
     }
 
+    // --- LOGÍSTICA VIA CEP ---
     async function consultarCEP() {
         const cep = document.getElementById('calc_cep').value.replace(/\D/g, '');
-        if(cep.length !== 8) return alert("CEP Inválido");
+        if(cep.length !== 8) return alert("Formato de CEP Inválido");
         
         try {
             const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
@@ -191,27 +233,32 @@
             
             const info = document.getElementById('frete-res');
             info.classList.remove('hidden');
-            // Estimativa simples baseada em região (Custo Zero)
-            let estimativa = data.uf === 'SP' ? "R$ 18,00 a R$ 25,00" : "R$ 35,00 a R$ 55,00";
-            info.innerHTML = `<b>Destino:</b> ${data.localidade}/${data.uf}<br><b>Est. Frete (PAC):</b> ${estimativa}`;
-        } catch (e) { alert("CEP não encontrado"); }
+            let base = data.uf === 'SP' ? 22.00 : 48.00; // Simulação de custo de mercado
+            info.innerHTML = `<i class="fas fa-map-marker-alt"></i> <b>${data.localidade}/${data.uf}</b> - Estimativa PAC: <b>R$ ${base.toFixed(2)}</b>`;
+        } catch (e) { alert("CEP não localizado"); }
     }
 
-    // --- ENGINE E UI (MANTIDOS) ---
+    // --- ENGINE DE PRECIFICAÇÃO PRO ---
     function runEngine() {
         const item = state.catalog.find(i => i.id == document.getElementById('calc_prod').value);
         if(!item) return;
+
         const plat = document.getElementById('calc_plat').value;
         const cBase = ((item.peso/1000 * state.cfg[item.tipo]) * (1 + state.cfg.falha/100)) + (state.cfg.watts/1000 * item.tempo * state.cfg.luz) + (item.tempo * state.cfg.dep) + state.cfg.emb;
+
         const body = document.getElementById('matrix-body');
-        body.innerHTML = "<tr><th>Margem</th><th>Venda</th><th>Lucro</th><th>Ação</th></tr>";
+        body.innerHTML = "";
         [20, 50, 70, 100, 150, 200].forEach(m => {
-            let pSug = cBase * (1 + m/100);
-            if(plat === 'elo7') pSug = (pSug + 1.5) / 0.88;
-            if(plat === 'ml') pSug = (pSug + 5) / 0.84;
-            if(plat === 'shopee') pSug = pSug / 0.80;
-            const taxas = (plat === 'pix' ? 0 : (plat === 'elo7' ? pSug*0.12+1.5 : (plat === 'ml' ? pSug*0.16+5 : pSug*0.20)));
-            body.innerHTML += `<tr><td><b>${m}%</b></td><td>R$ ${pSug.toFixed(2)}</td><td style="color:var(--success)">R$ ${(pSug-taxas-cBase).toFixed(2)}</td><td><button onclick="confirmSale('${item.nome}', ${pSug.toFixed(2)}, ${(pSug-taxas-cBase).toFixed(2)}, '${plat.toUpperCase()}')" class="btn-sell">VENDER</button></td></tr>`;
+            let mDec = m/100;
+            let preco = cBase * (1 + mDec);
+            if(plat === 'elo7') preco = (preco + 1.5) / 0.88;
+            if(plat === 'ml') preco = (preco + 5) / 0.84;
+            if(plat === 'shopee') preco = preco / 0.80;
+            
+            const taxas = (plat === 'pix' ? 0 : (plat === 'elo7' ? preco*0.12+1.5 : (plat === 'ml' ? preco*0.16+5 : preco*0.20)));
+            const lucro = preco - taxas - cBase;
+
+            body.innerHTML += `<tr><td>${m}%</td><td><b>R$ ${preco.toFixed(2)}</b></td><td style="color:var(--success)">R$ ${lucro.toFixed(2)}</td><td><button onclick="confirmSale('${item.nome}', ${preco.toFixed(2)}, ${lucro.toFixed(2)}, '${plat.toUpperCase()}')" class="btn-sell">VENDER</button></td></tr>`;
         });
     }
 
@@ -219,7 +266,8 @@
         const v = { id: Date.now(), data: new Date().toLocaleDateString('pt-BR'), nome, preco, lucro, plat, mes: new Date().getMonth(), user: state.currentUser };
         state.history.unshift(v); saveState();
         fetch(GOOGLE_URL, {method:'POST', mode:'no-cors', body:JSON.stringify(v)});
-        alert("Sincronizado!"); refreshBI();
+        alert("Transação Registrada com Sucesso!"); refreshBI();
+        showTab('dash', document.querySelector('.nav-btn'));
     }
 
     function refreshBI() {
@@ -228,7 +276,23 @@
         document.getElementById('kpi-fat').innerText = "R$ " + filtered.reduce((a,b) => a + parseFloat(b.preco), 0).toFixed(2);
         document.getElementById('kpi-luc').innerText = "R$ " + filtered.reduce((a,b) => a + parseFloat(b.lucro), 0).toFixed(2);
         document.getElementById('kpi-vol').innerText = filtered.length;
-        document.getElementById('report-body').innerHTML = filtered.map(s => `<tr><td>${s.data}</td><td>${s.nome}</td><td>R$ ${parseFloat(s.preco).toFixed(2)}</td><td>${s.user}</td><td><button onclick="delSale(${s.id})" style="border:none; background:none; color:var(--danger);"><i class="fas fa-trash"></i></button></td></tr>`).join('');
+        
+        document.getElementById('report-body').innerHTML = filtered.map(s => `<tr><td>${s.data}</td><td><b>${s.nome}</b></td><td>R$ ${parseFloat(s.preco).toFixed(2)}</td><td>${s.user}</td><td><button onclick="delSale(${s.id})" style="border:none; background:none; color:var(--danger); cursor:pointer;"><i class="fas fa-trash-alt"></i></button></td></tr>`).join('');
+        renderChart(filtered);
+    }
+
+    function renderChart(data) {
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        if(window.myChart) window.myChart.destroy();
+        const sales = data.slice(0,8).reverse();
+        window.myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: sales.map(s => s.data.split('/')[0]),
+                datasets: [{ label:'Vendas (R$)', data: sales.map(s=>s.preco), borderColor:'#58a6ff', tension:0.4, fill:true, backgroundColor:'rgba(88,166,255,0.1)' }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#38383a' } }, x: { grid: { display: false } } } }
+        });
     }
 
     function saveToCatalog() {
@@ -239,7 +303,7 @@
     }
 
     function renderCatalog() {
-        document.getElementById('catalog-list').innerHTML = state.catalog.map(i => `<div class="card" style="display:flex; justify-content:space-between; padding:15px; margin-bottom:10px;"><span><b>${i.nome}</b> (${i.tipo.toUpperCase()})</span><button onclick="delCat(${i.id})" style="color:var(--danger); background:none; border:none;"><i class="fas fa-trash"></i></button></div>`).join('');
+        document.getElementById('catalog-list').innerHTML = state.catalog.map(i => `<div class="card" style="display:flex; justify-content:space-between; padding:15px; margin-bottom:10px; border-radius:18px;"><span><b>${i.nome}</b> (${i.tipo.toUpperCase()})</span><button onclick="delCat(${i.id})" style="color:var(--danger); background:none; border:none; cursor:pointer;"><i class="fas fa-trash"></i></button></div>`).join('');
     }
 
     function showTab(t, btn) {
@@ -248,14 +312,21 @@
         document.getElementById('tab-'+t).classList.remove('hidden'); btn.classList.add('active');
     }
 
+    function updateMyPassword() {
+        const np = document.getElementById('new-pass').value;
+        if(!np) return alert("Digite a nova senha");
+        state.cfg[state.currentUser === 'Marcelo' ? 'passMarcelo' : 'passFernanda'] = np;
+        saveState(); alert("Senha de " + state.currentUser + " atualizada!");
+    }
+
     function saveState() { localStorage.setItem(DB_KEY, JSON.stringify(state)); }
     function loadInputs() { document.getElementById('c_pla').value = state.cfg.pla; document.getElementById('c_petg').value = state.cfg.petg; document.getElementById('c_luz').value = state.cfg.luz; document.getElementById('c_dep').value = state.cfg.dep; }
-    function saveConfigs() { state.cfg.pla = parseFloat(document.getElementById('c_pla').value); state.cfg.petg = parseFloat(document.getElementById('c_petg').value); state.cfg.luz = parseFloat(document.getElementById('c_luz').value); state.cfg.dep = parseFloat(document.getElementById('c_dep').value); saveState(); alert("Salvo!"); }
+    function saveConfigs() { state.cfg.pla = parseFloat(document.getElementById('c_pla').value); state.cfg.petg = parseFloat(document.getElementById('c_petg').value); state.cfg.luz = parseFloat(document.getElementById('c_luz').value); state.cfg.dep = parseFloat(document.getElementById('c_dep').value); saveState(); alert("Ajustes Salvos!"); }
     function delCat(id) { state.catalog = state.catalog.filter(i => i.id !== id); saveState(); renderCatalog(); updateDropdown(); }
-    function delSale(id) { if(confirm("Estornar venda?")) { state.history = state.history.filter(s => s.id !== id); saveState(); refreshBI(); } }
-    function updateDropdown() { document.getElementById('calc_prod').innerHTML = '<option value="">-- Escolha --</option>' + state.catalog.map(i => `<option value="${i.id}">${i.nome}</option>`).join(''); }
+    function delSale(id) { if(confirm("Deseja estornar esta venda?")) { state.history = state.history.filter(s => s.id !== id); saveState(); refreshBI(); } }
+    function updateDropdown() { document.getElementById('calc_prod').innerHTML = '<option value="">-- Escolha um Modelo --</option>' + state.catalog.map(i => `<option value="${i.id}">${i.nome}</option>`).join(''); }
     function selectUser(u) { state.currentUser = u; document.getElementById('btn-marcelo').classList.toggle('active', u === 'Marcelo'); document.getElementById('btn-fernanda').classList.toggle('active', u === 'Fernanda'); }
-    function hardReset() { localStorage.clear(); location.reload(); }
+    function hardReset() { if(confirm("Isso limpará os dados locais para corrigir erros. Confirmar?")) { localStorage.clear(); location.reload(); } }
     function logout() { location.reload(); }
 </script>
 </body>
