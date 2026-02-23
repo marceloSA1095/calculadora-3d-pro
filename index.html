@@ -10,7 +10,7 @@
         .container { max-width: 1000px; margin: 0 auto; }
         
         /* Login */
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; }
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 85vh; }
         .login-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 400px; color: #333; }
         
         /* Layout */
@@ -41,10 +41,10 @@
     <div class="login-card">
         <h2 style="text-align:center; margin-bottom:20px;">InovaFam3D 🔐</h2>
         <div class="input-group">
-            <label>Senha de Acesso:</label>
+            <label>Senha de Empresa:</label>
             <input type="password" id="pass-input" placeholder="Digite a senha">
         </div>
-        <button class="btn" onclick="checkLogin()">ENTRAR</button>
+        <button class="btn" onclick="checkLogin()">ACESSAR SISTEMA</button>
         <p id="login-error" style="color:red; text-align:center; margin-top:10px; display:none;">Senha incorreta!</p>
     </div>
 </div>
@@ -85,7 +85,7 @@
         <div id="box_resultado" class="res-box hidden">
             <div id="res_preco" style="font-size:1.6em; color:#4ecca3; font-weight:bold;"></div>
             <div id="res_detalhes" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;"></div>
-            <button class="btn" style="background:#28a745; color:white;" onclick="salvarVenda()">SALVAR VENDA</button>
+            <button class="btn" style="background:#28a745; color:white;" onclick="salvarVenda()">SALVAR NA PLANILHA</button>
         </div>
     </div>
 
@@ -97,7 +97,6 @@
             <div class="input-group"><label>Mão de Obra (R$/h):</label><input type="number" id="cfg_mao"></div>
             <div class="input-group"><label>Taxa Falha (%):</label><input type="number" id="cfg_falha"></div>
             <div class="input-group"><label>Embalagem (R$):</label><input type="number" id="cfg_embalagem"></div>
-            <div class="input-group" style="grid-column: span 2"><label>Google Apps Script URL:</label><input type="text" id="cfg_url"></div>
         </div>
         <button class="btn" onclick="salvarConfig()">SALVAR CONFIGURAÇÕES</button>
     </div>
@@ -116,29 +115,51 @@
 </div>
 
 <script>
-    // Configurações InovaFam3D
-    let config = JSON.parse(localStorage.getItem('inovafam_cfg')) || {
-        filamento: 95, energia: 0.90, watts: 250, mao: 15, falha: 5, embalagem: 3, url: "", 
+    // --- CONFIGURAÇÃO DA INOVAFAM3D ---
+    const default_config = {
+        filamento: 95, 
+        energia: 0.90, 
+        watts: 250, 
+        mao: 15, 
+        falha: 5, 
+        embalagem: 3, 
+        url: "COLE_SEU_LINK_AQUI", // <--- COLE SEU LINK DO GOOGLE SCRIPTS AQUI
         pass: "17@0117InovaFam"
     };
+
+    let config = JSON.parse(localStorage.getItem('inovafam_cfg')) || default_config;
+    // Garante que o link da planilha seja atualizado se você mudar no código
+    config.url = default_config.url; 
+    
     let vendas = JSON.parse(localStorage.getItem('inovafam_vendas')) || [];
     let atual = null;
 
-    // Login
+    // --- SISTEMA DE LOGIN ---
     function checkLogin() {
-        if(document.getElementById('pass-input').value === config.pass) {
+        const inputPass = document.getElementById('pass-input').value;
+        if(inputPass === config.pass) {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-content').classList.remove('hidden');
             localStorage.setItem('inovafam_auth', 'true');
-        } else { document.getElementById('login-error').style.display = 'block'; }
+        } else {
+            document.getElementById('login-error').style.display = 'block';
+        }
     }
-    if(localStorage.getItem('inovafam_auth') === 'true') {
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('main-content').classList.remove('hidden');
-    }
-    function logout() { localStorage.removeItem('inovafam_auth'); location.reload(); }
 
-    // Funções
+    // Verifica se já está logado ao carregar a página
+    window.onload = function() {
+        if(localStorage.getItem('inovafam_auth') === 'true') {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+        }
+    };
+
+    function logout() {
+        localStorage.removeItem('inovafam_auth');
+        location.reload();
+    }
+
+    // --- FUNÇÕES CORE ---
     function salvarConfig() {
         config.filamento = parseFloat(document.getElementById('cfg_filamento').value);
         config.energia = parseFloat(document.getElementById('cfg_energia').value);
@@ -146,9 +167,8 @@
         config.mao = parseFloat(document.getElementById('cfg_mao').value);
         config.falha = parseFloat(document.getElementById('cfg_falha').value);
         config.embalagem = parseFloat(document.getElementById('cfg_embalagem').value);
-        config.url = document.getElementById('cfg_url').value;
         localStorage.setItem('inovafam_cfg', JSON.stringify(config));
-        alert("Configurações salvas!");
+        alert("Configurações salvas localmente!");
     }
 
     function calcular() {
@@ -166,56 +186,4 @@
         let taxa = 0;
         if(plat === 'elo7') { taxa = (preco * 0.12) + 1.5; preco += taxa; }
         else if(plat === 'mercado') { taxa = (preco * 0.16) + 5; preco += taxa; }
-        else if(plat === 'shopee') { taxa = (preco * 0.20); preco += taxa; }
-
-        atual = {
-            nome: document.getElementById('prod_nome').value || "Sem nome",
-            preco: preco.toFixed(2), custo: cBase.toFixed(2), lucro: (preco - cBase - taxa).toFixed(2),
-            data: new Date(), plataforma: plat
-        };
-
-        document.getElementById('res_preco').innerText = `R$ ${atual.preco}`;
-        document.getElementById('res_detalhes').innerHTML = `<div>Custo: R$ ${atual.custo}</div><div>Lucro: R$ ${atual.lucro}</div>`;
-        document.getElementById('box_resultado').classList.remove('hidden');
-    }
-
-    function salvarVenda() {
-        vendas.unshift(atual);
-        localStorage.setItem('inovafam_vendas', JSON.stringify(vendas));
-        if(config.url) fetch(config.url, {method:'POST', mode:'no-cors', body:JSON.stringify(atual)});
-        alert("Venda registrada na nuvem!");
-        document.getElementById('box_resultado').classList.add('hidden');
-    }
-
-    function showTab(tab) {
-        document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tab).classList.remove('hidden');
-        event.target.classList.add('active');
-        if(tab === 'config') {
-            document.getElementById('cfg_filamento').value = config.filamento;
-            document.getElementById('cfg_energia').value = config.energia;
-            document.getElementById('cfg_watts').value = config.watts;
-            document.getElementById('cfg_mao').value = config.mao;
-            document.getElementById('cfg_falha').value = config.falha;
-            document.getElementById('cfg_embalagem').value = config.embalagem;
-            document.getElementById('cfg_url').value = config.url;
-        }
-        if(tab === 'history') {
-            document.getElementById('lista_vendas').innerHTML = vendas.map(v => `
-                <div class="history-item">
-                    <div><b>${v.nome}</b><br><small>${new Date(v.data).toLocaleDateString()}</small></div>
-                    <div style="text-align:right"><b style="color:#4ecca3">R$ ${v.preco}</b></div>
-                </div>`).join('');
-        }
-        if(tab === 'analysis') {
-            const mes = new Date().getMonth();
-            const doMes = vendas.filter(v => new Date(v.data).getMonth() === mes);
-            document.getElementById('stat_vendas').innerText = doMes.length;
-            document.getElementById('stat_fat').innerText = "R$ " + doMes.reduce((a, b) => a + parseFloat(b.preco), 0).toFixed(2);
-            document.getElementById('stat_lucro').innerText = "R$ " + doMes.reduce((a, b) => a + parseFloat(b.lucro), 0).toFixed(2);
-        }
-    }
-</script>
-</body>
-</html>
+        else
