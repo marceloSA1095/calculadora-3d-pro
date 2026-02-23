@@ -3,276 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InovaFam3D - Gestão de Vendas</title>
+    <title>InovaFam3D - Gestão Pro</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; padding: 20px; color: #e2e2e2; }
-        .container { max-width: 1000px; margin: 0 auto; }
+        .container { max-width: 1100px; margin: 0 auto; }
         .logo-container { text-align: center; margin-bottom: 20px; }
-        .logo-img { max-width: 200px; height: auto; border-radius: 15px; background: white; padding: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 85vh; text-align: center; }
-        .login-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 400px; color: #333; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { font-size: 2.5em; color: #4ecca3; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        .nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
-        .nav-btn { padding: 12px 20px; border: none; border-radius: 25px; background: #0f3460; color: white; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .logo-img { max-width: 180px; height: auto; border-radius: 15px; background: white; padding: 10px; }
+        
+        /* Navegação */
+        .nav { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; flex-wrap: wrap; }
+        .nav-btn { padding: 10px 18px; border: none; border-radius: 20px; background: #0f3460; color: white; cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 0.9em; }
         .nav-btn.active { background: #4ecca3; color: #1a1a2e; }
-        .card { background: #16213e; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+
+        /* Cards */
+        .card { background: #16213e; border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        h3 { margin-bottom: 15px; color: #4ecca3; border-bottom: 1px solid #0f3460; padding-bottom: 5px; }
+        
+        /* Formulários */
         .input-group { margin-bottom: 15px; }
-        label { display: block; font-weight: 600; margin-bottom: 5px; color: #4ecca3; font-size: 0.9em; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; color: #4ecca3; font-size: 0.85em; }
         input, select { width: 100%; padding: 12px; border: 1px solid #0f3460; border-radius: 10px; background: #1a1a2e; color: white; font-size: 16px; outline: none; }
-        .btn { width: 100%; background: #4ecca3; color: #1a1a2e; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn-save { background: #28a745; color: white; margin-top: 20px; }
-        .res-box { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 15px; margin-top: 20px; border-left: 5px solid #4ecca3; }
-        .history-item { background: rgba(255,255,255,0.03); padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
-        .stat-card { background: #0f3460; padding: 20px; border-radius: 15px; text-align: center; }
-        .stat-val { font-size: 1.8em; font-weight: bold; color: #4ecca3; }
+        input:focus { border-color: #4ecca3; }
+        
+        .btn { width: 100%; background: #4ecca3; color: #1a1a2e; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 5px; }
+        .btn:hover { background: #45b393; transform: translateY(-2px); }
+        .btn-danger { background: #e94560; color: white; margin-top: 10px; padding: 8px; font-size: 0.8em; }
+
+        /* Tabelas e Listas */
+        .res-box { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-top: 20px; border-left: 5px solid #4ecca3; }
+        .history-item { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
         .hidden { display: none !important; }
-        .product-list { margin-top: 10px; border-top: 1px solid #0f3460; padding-top: 10px; }
-        .product-item { display: flex; justify-content: space-between; font-size: 0.8em; margin-bottom: 5px; background: #1a1a2e; padding: 5px; border-radius: 5px; }
+        
+        /* Login */
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; }
+        .login-card { background: white; padding: 40px; border-radius: 20px; width: 100%; max-width: 400px; color: #333; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
-    <div class="logo-container">
-        <img src="logo.png.jfif" alt="InovaFam3D Logo" class="logo-img" onerror="this.style.display='none'">
-    </div>
+    <div class="logo-container"><img src="logo.png.jfif" class="logo-img" onerror="this.style.display='none'"></div>
     <div class="login-card">
-        <h2 style="margin-bottom: 20px;">InovaFam3D 🔐</h2>
-        <div class="input-group">
-            <label>Senha de Empresa:</label>
-            <input type="password" id="pass-input" placeholder="Digite a senha">
-        </div>
-        <button class="btn" onclick="checkLogin()">ACESSAR SISTEMA</button>
-        <p id="login-error" style="color: red; margin-top: 10px; display: none; font-weight: bold;">Senha incorreta!</p>
+        <h2 style="text-align:center; margin-bottom:20px;">InovaFam3D 🔐</h2>
+        <input type="password" id="pass-input" placeholder="Senha da Empresa" style="background:#f4f4f4; color:#333; border:1px solid #ddd; margin-bottom:15px;">
+        <button class="btn" onclick="checkLogin()">ACESSAR</button>
     </div>
 </div>
 
 <div id="main-content" class="container hidden">
-    <div class="header">
-        <h1>InovaFam3D 🎯</h1>
-        <p>Precificação & Gestão Profissional</p>
-        <button onclick="logout()" style="background:none; border:none; color:#888; cursor:pointer; text-decoration:underline; font-size:0.8em; margin-top:10px;">Desconectar / Sair</button>
+    <div class="header" style="text-align:center; margin-bottom:20px;">
+        <h1 style="color:#4ecca3">InovaFam3D</h1>
+        <button onclick="logout()" style="background:none; border:none; color:#888; cursor:pointer; text-decoration:underline; font-size:0.8em;">Sair do Sistema</button>
     </div>
 
     <div class="nav">
         <button class="nav-btn active" onclick="showTab('calc')">Calculadora</button>
-        <button class="nav-btn" onclick="showTab('config')">Configurações</button>
+        <button class="nav-btn" onclick="showTab('produtos')">Produtos</button>
+        <button class="nav-btn" onclick="showTab('config')">Custos & ADS</button>
         <button class="nav-btn" onclick="showTab('history')">Histórico</button>
-        <button class="nav-btn" onclick="showTab('analysis')">Análise Mensal</button>
+        <button class="nav-btn" onclick="showTab('analysis')">Análise</button>
     </div>
 
     <div id="calc" class="card">
-        <h3>📊 Nova Venda</h3>
-        <div class="grid" style="margin-top:20px">
+        <h3>🎯 Registrar Venda</h3>
+        <div class="grid">
             <div class="input-group">
-                <label>Selecionar Produto Cadastrado:</label>
-                <select id="select_produto" onchange="carregarDadosProduto()">
-                    <option value="">-- Selecione ou digite abaixo --</option>
+                <label>Selecionar Produto:</label>
+                <select id="sel_prod" onchange="previewVenda()">
+                    <option value="">-- Escolha um produto --</option>
                 </select>
             </div>
-            <div class="input-group"><label>Nome do Item:</label><input type="text" id="prod_nome"></div>
-            <div class="input-group"><label>Peso Peça (g):</label><input type="number" id="prod_peso" value="0"></div>
-            <div class="input-group"><label>Peso Suporte (g):</label><input type="number" id="prod_suporte" value="0"></div>
-            <div class="input-group"><label>Tempo (h):</label><input type="number" id="prod_tempo" value="0" step="0.1"></div>
             <div class="input-group">
-                <label>Plataforma de Venda:</label>
-                <select id="prod_plataforma">
-                    <option value="Direta">Venda Direta / PIX (0%)</option>
-                    <option value="Elo7">Elo7 (12% + 1,50)</option>
-                    <option value="Mercado Livre">Mercado Livre (16% + 5,00)</option>
-                    <option value="Shopee">Shopee (20%)</option>
+                <label>Canal de Venda / ADS:</label>
+                <select id="sel_ads" onchange="previewVenda()">
+                    <option value="direta">Venda Direta / Sem ADS</option>
+                    <option value="google">Google Shopping</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="facebook">Facebook</option>
+                    <option value="tiktok">TikTok</option>
+                    <option value="shopee_ads">Shopee ADS</option>
                 </select>
             </div>
-            <div class="input-group"><label>Margem Desejada (%):</label><input type="number" id="prod_margem" value="100"></div>
+            <div class="input-group">
+                <label>Plataforma (Taxas):</label>
+                <select id="sel_plat" onchange="previewVenda()">
+                    <option value="pix">PIX / Direta (0%)</option>
+                    <option value="elo7">Elo7 (12% + 1,50)</option>
+                    <option value="ml">Mercado Livre (16% + 5,00)</option>
+                    <option value="shopee">Shopee (20%)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Margem de Lucro (%):</label>
+                <input type="number" id="venda_margem" value="100" oninput="previewVenda()">
+            </div>
         </div>
-        <button class="btn" onclick="calcularOrcamento()">CALCULAR E REVISAR</button>
-        <div id="box_resultado" class="res-box hidden">
-            <div id="res_preco_venda" style="font-size: 1.6em; color: #4ecca3; font-weight:bold;"></div>
-            <div id="res_detalhes" style="margin-top:10px; display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
-            <button class="btn btn-save" onclick="salvarVenda()">CONFIRMAR VENDA E REGISTRAR</button>
+        <div id="res_venda" class="res-box hidden">
+            </div>
+    </div>
+
+    <div id="produtos" class="card hidden">
+        <h3>📦 Cadastro de Produtos</h3>
+        <div class="grid">
+            <div class="input-group"><label>Nome do Produto:</label><input type="text" id="p_nome" placeholder="Ex: Vaso Articulado"></div>
+            <div class="input-group">
+                <label>Tipo de Filamento:</label>
+                <select id="p_tipo">
+                    <option value="PLA">PLA</option>
+                    <option value="PETG">PETG</option>
+                    <option value="ABS">ABS</option>
+                    <option value="TPU">TPU</option>
+                    <option value="ASA">ASA</option>
+                </select>
+            </div>
+            <div class="input-group"><label>Peso Produção (g):</label><input type="number" id="p_peso"></div>
+            <div class="input-group"><label>Tempo Impressão (h):</label><input type="number" id="p_tempo" step="0.1"></div>
         </div>
+        <button class="btn" onclick="addProduto()">CADASTRAR PRODUTO</button>
+        <div id="lista_p" style="margin-top:20px"></div>
     </div>
 
     <div id="config" class="card hidden">
         <div class="grid">
             <div>
-                <h3>⚙️ Custos Operacionais</h3>
-                <div class="input-group"><label>Filamento (R$/kg):</label><input type="number" id="cfg_filamento"></div>
-                <div class="input-group"><label>Energia (R$/kWh):</label><input type="number" id="cfg_energia"></div>
-                <div class="input-group"><label>Watts (W):</label><input type="number" id="cfg_watts"></div>
-                <div class="input-group"><label>Mão de Obra (R$/h):</label><input type="number" id="cfg_mao"></div>
-                <div class="input-group"><label>Taxa de Falha (%):</label><input type="number" id="cfg_falha"></div>
-                <div class="input-group"><label>Embalagem (R$):</label><input type="number" id="cfg_embalagem"></div>
-                <button class="btn" onclick="salvarConfig()">SALVAR CUSTOS</button>
+                <h3>💰 Preço Filamento (R$/kg)</h3>
+                <div class="input-group"><label>PLA:</label><input type="number" id="c_pla" value="95"></div>
+                <div class="input-group"><label>PETG:</label><input type="number" id="c_petg" value="90"></div>
+                <div class="input-group"><label>ABS:</label><input type="number" id="c_abs" value="80"></div>
+                <div class="input-group"><label>TPU:</label><input type="number" id="c_tpu" value="150"></div>
+                <div class="input-group"><label>ASA:</label><input type="number" id="c_asa" value="120"></div>
             </div>
             <div>
-                <h3>📦 Cadastro de Itens</h3>
-                <div class="input-group"><label>Nome do Produto:</label><input type="text" id="cad_nome"></div>
-                <div class="input-group"><label>Peso Peça (g):</label><input type="number" id="cad_peso"></div>
-                <div class="input-group"><label>Peso Suporte (g):</label><input type="number" id="cad_suporte"></div>
-                <div class="input-group"><label>Tempo (h):</label><input type="number" id="cad_tempo"></div>
-                <button class="btn" style="background:#007bff; color:white;" onclick="cadastrarProduto()">CADASTRAR ITEM</button>
-                <div id="lista_produtos_cadastrados" class="product-list"></div>
+                <h3>📢 Custos de ADS (R$ por venda)</h3>
+                <div class="input-group"><label>Google Shop:</label><input type="number" id="ads_google" value="2.00"></div>
+                <div class="input-group"><label>Instagram:</label><input type="number" id="ads_insta" value="1.50"></div>
+                <div class="input-group"><label>Facebook:</label><input type="number" id="ads_face" value="1.50"></div>
+                <div class="input-group"><label>TikTok:</label><input type="number" id="ads_tik" value="1.00"></div>
+                <div class="input-group"><label>Shopee ADS:</label><input type="number" id="ads_shop" value="0.80"></div>
+            </div>
+            <div>
+                <h3>⚡ Outros Custos</h3>
+                <div class="input-group"><label>Energia (R$/kWh):</label><input type="number" id="c_luz" value="0.95"></div>
+                <div class="input-group"><label>Embalagem (R$):</label><input type="number" id="c_emb" value="3.50"></div>
+                <div class="input-group"><label>Watts Impressora:</label><input type="number" id="c_watts" value="250"></div>
             </div>
         </div>
+        <button class="btn" onclick="saveConfigs()">SALVAR TODAS AS CONFIGURAÇÕES</button>
     </div>
 
     <div id="history" class="card hidden">
-        <h3>📋 Relatório de Vendas</h3>
-        <div id="lista_vendas" style="margin-top:20px"></div>
+        <h3>📋 Histórico de Vendas</h3>
+        <div id="lista_vendas"></div>
     </div>
 
     <div id="analysis" class="card hidden">
-        <h3>📊 Resumo Financeiro Mensal</h3>
-        <div class="grid" style="margin-top:20px">
-            <div class="stat-card"><label>Total Itens Vendidos</label><div class="stat-val" id="stat_vendas">0</div></div>
-            <div class="stat-card"><label>Faturamento Bruto</label><div class="stat-val" id="stat_faturamento">R$ 0</div></div>
-            <div class="stat-card"><label>Lucro Líquido Total</label><div class="stat-val" id="stat_lucro">R$ 0</div></div>
+        <h3>📊 Resultados Mensais</h3>
+        <div class="grid">
+            <div class="stat-card"><label>Faturamento</label><div class="stat-val" id="st_fat">R$ 0</div></div>
+            <div class="stat-card"><label>Lucro Real</label><div class="stat-val" id="st_lucro">R$ 0</div></div>
+            <div class="stat-card"><label>Investimento ADS</label><div class="stat-val" id="st_ads" style="color:#e94560">R$ 0</div></div>
         </div>
     </div>
 </div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycyHpnL4YYf_kyuvdne82MqWPFt_LL19bS40H6ba3yvs6nhVWBmL1mBZ_e_qOGJWcV/exec";
+    const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbycyHpnL4YYf_kyuvdne82MqWPFt_LL19bS40H6ba3yvs6nhVWBmL1mBZ_e_qOGJWcV/exec";
     
-    let config = JSON.parse(localStorage.getItem('inovafam_cfg')) || {
-        filamento: 80, energia: 0.85, watts: 300, mao: 25, falha: 5, embalagem: 2.5,
-        url: GOOGLE_SCRIPT_URL,
-        pass: "15@0117InovaFam" 
+    let config = JSON.parse(localStorage.getItem('inova_cfg')) || {
+        pla:95, petg:90, abs:80, tpu:150, asa:120,
+        ads_google:2, ads_insta:1.5, ads_face:1.5, ads_tik:1, ads_shop:0.8,
+        luz:0.95, emb:3.5, watts:250, pass:"15@0117InovaFam"
     };
-    
-    let produtos = JSON.parse(localStorage.getItem('inovafam_produtos')) || [];
-    let vendas = JSON.parse(localStorage.getItem('inovafam_vendas')) || [];
-    let calculoAtual = null;
 
+    let produtos = JSON.parse(localStorage.getItem('inova_prods')) || [];
+    let vendas = JSON.parse(localStorage.getItem('inova_vendas')) || [];
+
+    // LOGIN
     function checkLogin() {
-        const input = document.getElementById('pass-input').value;
-        if(input === config.pass) {
+        if(document.getElementById('pass-input').value === config.pass) {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-content').classList.remove('hidden');
-            localStorage.setItem('inovafam_logged', 'true');
-            atualizarDropdownProdutos();
-        } else {
-            document.getElementById('login-error').style.display = 'block';
-        }
+            init();
+        } else { alert("Senha incorreta!"); }
     }
 
-    window.onload = function() {
-        if(localStorage.getItem('inovafam_logged') === 'true') {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('main-content').classList.remove('hidden');
-            atualizarDropdownProdutos();
-        }
-    };
+    function logout() { localStorage.removeItem('inova_auth'); location.reload(); }
 
-    function logout() {
-        localStorage.removeItem('inovafam_logged');
-        location.reload();
+    function init() {
+        renderProdsDropdown();
+        renderProdsLista();
+        loadConfigInputs();
     }
 
-    // CADASTRO DE PRODUTOS
-    function cadastrarProduto() {
-        const nome = document.getElementById('cad_nome').value;
-        const peso = parseFloat(document.getElementById('cad_peso').value);
-        const suporte = parseFloat(document.getElementById('cad_suporte').value);
-        const tempo = parseFloat(document.getElementById('cad_tempo').value);
+    // GESTÃO DE PRODUTOS
+    function addProduto() {
+        const p = {
+            id: Date.now(),
+            nome: document.getElementById('p_nome').value,
+            tipo: document.getElementById('p_tipo').value,
+            peso: parseFloat(document.getElementById('p_peso').value),
+            tempo: parseFloat(document.getElementById('p_tempo').value)
+        };
+        produtos.push(p);
+        localStorage.setItem('inova_prods', JSON.stringify(produtos));
+        init();
+        alert("Produto salvo!");
+    }
 
-        if(!nome || isNaN(peso)) return alert("Preencha os dados do item!");
+    function deleteProd(id) {
+        produtos = produtos.filter(p => p.id !== id);
+        localStorage.setItem('inova_prods', JSON.stringify(produtos));
+        init();
+    }
 
-        produtos.push({ nome, peso, suporte, tempo });
-        localStorage.setItem('inovafam_produtos', JSON.stringify(produtos));
+    // GESTÃO DE CUSTOS
+    function saveConfigs() {
+        config.pla = parseFloat(document.getElementById('c_pla').value);
+        config.petg = parseFloat(document.getElementById('c_petg').value);
+        config.abs = parseFloat(document.getElementById('c_abs').value);
+        config.tpu = parseFloat(document.getElementById('c_tpu').value);
+        config.asa = parseFloat(document.getElementById('c_asa').value);
+        config.ads_google = parseFloat(document.getElementById('ads_google').value);
+        config.ads_insta = parseFloat(document.getElementById('ads_insta').value);
+        config.ads_face = parseFloat(document.getElementById('ads_face').value);
+        config.ads_tik = parseFloat(document.getElementById('ads_tik').value);
+        config.ads_shop = parseFloat(document.getElementById('ads_shop').value);
+        config.luz = parseFloat(document.getElementById('c_luz').value);
+        config.emb = parseFloat(document.getElementById('c_emb').value);
+        config.watts = parseFloat(document.getElementById('c_watts').value);
+        localStorage.setItem('inova_cfg', JSON.stringify(config));
+        alert("Configurações salvas!");
+    }
+
+    function loadConfigInputs() {
+        document.getElementById('c_pla').value = config.pla;
+        document.getElementById('ads_google').value = config.ads_google;
+        // ... carregar os demais campos se necessário ...
+    }
+
+    // CÁLCULO DE VENDA
+    function previewVenda() {
+        const pId = document.getElementById('sel_prod').value;
+        if(!pId) return;
+        const p = produtos.find(prod => prod.id == pId);
+        const adsTipo = document.getElementById('sel_ads').value;
+        const platTipo = document.getElementById('sel_plat').value;
+        const margem = parseFloat(document.getElementById('venda_margem').value) / 100;
+
+        // Custos
+        let precoMaterial = 0;
+        if(p.tipo === 'PLA') precoMaterial = config.pla;
+        else if(p.tipo === 'PETG') precoMaterial = config.petg;
+        else if(p.tipo === 'ABS') precoMaterial = config.abs;
+        else if(p.tipo === 'TPU') precoMaterial = config.tpu;
+        else if(p.tipo === 'ASA') precoMaterial = config.asa;
+
+        const custoFilamento = (p.peso / 1000) * precoMaterial;
+        const custoEnergia = (config.watts / 1000) * p.tempo * config.luz;
+        let custoAds = 0;
+        if(adsTipo === 'google') custoAds = config.ads_google;
+        else if(adsTipo === 'instagram') custoAds = config.ads_insta;
+        else if(adsTipo === 'facebook') custoAds = config.ads_face;
+        else if(adsTipo === 'tiktok') custoAds = config.ads_tik;
+        else if(adsTipo === 'shopee_ads') custoAds = config.ads_shop;
+
+        const custoProducao = custoFilamento + custoEnergia + config.emb + custoAds;
         
-        document.getElementById('cad_nome').value = "";
-        document.getElementById('cad_peso').value = "";
-        document.getElementById('cad_suporte').value = "";
-        document.getElementById('cad_tempo').value = "";
-        
-        atualizarDropdownProdutos();
-        renderProdutosCadastrados();
-        alert("Item cadastrado com sucesso!");
+        let precoFinal = custoProducao * (1 + margem);
+        let taxaPlat = 0;
+        if(platTipo === 'elo7') { taxaPlat = (precoFinal * 0.12) + 1.5; precoFinal += taxaPlat; }
+        else if(platTipo === 'ml') { taxaPlat = (precoFinal * 0.16) + 5; precoFinal += taxaPlat; }
+        else if(platTipo === 'shopee') { taxaPlat = (precoFinal * 0.20); precoFinal += taxaPlat; }
+
+        const lucro = precoFinal - custoProducao - taxaPlat;
+
+        const res = document.getElementById('res_venda');
+        res.classList.remove('hidden');
+        res.innerHTML = `
+            <div style="font-size:1.4em; font-weight:bold; color:#4ecca3">Preço Sugerido: R$ ${precoFinal.toFixed(2)}</div>
+            <p>Custo Total: R$ ${(custoProducao + taxaPlat).toFixed(2)} | Lucro: R$ ${lucro.toFixed(2)}</p>
+            <button class="btn" style="background:#28a745; color:white; margin-top:15px;" onclick="confirmarVenda(${precoFinal.toFixed(2)}, ${lucro.toFixed(2)}, ${custoAds})">CONFIRMAR VENDA</button>
+        `;
     }
 
-    function atualizarDropdownProdutos() {
-        const select = document.getElementById('select_produto');
-        select.innerHTML = '<option value="">-- Selecione um item --</option>';
-        produtos.forEach((p, index) => {
-            select.innerHTML += `<option value="${index}">${p.nome}</option>`;
-        });
+    function confirmarVenda(preco, lucro, ads) {
+        const pId = document.getElementById('sel_prod').value;
+        const p = produtos.find(prod => prod.id == pId);
+        const venda = {
+            data: new Date().toLocaleDateString(),
+            nome: p.nome,
+            preco: preco,
+            lucro: lucro,
+            ads: ads,
+            mes: new Date().getMonth()
+        };
+        vendas.unshift(venda);
+        localStorage.setItem('inova_vendas', JSON.stringify(vendas));
+        if(GOOGLE_URL) fetch(GOOGLE_URL, {method:'POST', mode:'no-cors', body:JSON.stringify(venda)});
+        alert("Venda registrada!");
+        showTab('history');
     }
 
-    function carregarDadosProduto() {
-        const index = document.getElementById('select_produto').value;
-        if(index === "") return;
-        
-        const p = produtos[index];
-        document.getElementById('prod_nome').value = p.nome;
-        document.getElementById('prod_peso').value = p.peso;
-        document.getElementById('prod_suporte').value = p.suporte;
-        document.getElementById('prod_tempo').value = p.tempo;
+    // RENDERIZADORES
+    function renderProdsDropdown() {
+        const sel = document.getElementById('sel_prod');
+        sel.innerHTML = '<option value="">-- Escolha um produto --</option>' + 
+            produtos.map(p => `<option value="${p.id}">${p.nome} (${p.tipo})</option>`).join('');
     }
 
-    function renderProdutosCadastrados() {
-        const lista = document.getElementById('lista_produtos_cadastrados');
-        lista.innerHTML = produtos.map((p, i) => `
-            <div class="product-item">
-                <span>${p.nome} (${p.peso}g)</span>
-                <button onclick="removerProduto(${i})" style="background:none; border:none; color:red; cursor:pointer;">✖</button>
+    function renderProdsLista() {
+        document.getElementById('lista_p').innerHTML = produtos.map(p => `
+            <div class="history-item">
+                <span><b>${p.nome}</b> - ${p.tipo} (${p.peso}g / ${p.tempo}h)</span>
+                <button class="btn-danger" onclick="deleteProd(${p.id})">Remover</button>
             </div>
         `).join('');
     }
 
-    function removerProduto(i) {
-        produtos.splice(i, 1);
-        localStorage.setItem('inovafam_produtos', JSON.stringify(produtos));
-        atualizarDropdownProdutos();
-        renderProdutosCadastrados();
+    function renderHistory() {
+        document.getElementById('lista_vendas').innerHTML = vendas.map(v => `
+            <div class="history-item">
+                <div><b>${v.nome}</b><br><small>${v.data}</small></div>
+                <div style="text-align:right"><b style="color:#4ecca3">R$ ${v.preco.toFixed(2)}</b><br><small>Lucro: R$ ${v.lucro.toFixed(2)}</small></div>
+            </div>
+        `).join('');
     }
 
-    // CÁLCULO E VENDA
-    function calcularOrcamento() {
-        const pesoPeca = parseFloat(document.getElementById('prod_peso').value) || 0;
-        const pesoSuporte = parseFloat(document.getElementById('prod_suporte').value) || 0;
-        const tempo = parseFloat(document.getElementById('prod_tempo').value) || 0;
-        const margem = parseFloat(document.getElementById('prod_margem').value) / 100;
-        const plataforma = document.getElementById('prod_plataforma').value;
-
-        const custoMat = ((pesoPeca + pesoSuporte) / 1000) * config.filamento;
-        const custoLuz = (config.watts / 1000) * tempo * config.energia;
-        const custoMao = tempo * config.mao;
-        const custoBase = (custoMat + custoLuz + custoMao + config.embalagem) * (1 + (config.falha/100));
-        
-        let preco = custoBase * (1 + margem);
-        let taxa = 0;
-        if(plataforma === 'Elo7') { taxa = (preco * 0.12) + 1.5; preco += taxa; }
-        else if(plataforma === 'Mercado Livre') { taxa = (preco * 0.16) + 5; preco += taxa; }
-        else if(plataforma === 'Shopee') { taxa = (preco * 0.20); preco += taxa; }
-
-        calculoAtual = {
-            nome: document.getElementById('prod_nome').value || "Sem nome",
-            precoVenda: preco.toFixed(2),
-            custoTotal: custoBase.toFixed(2),
-            lucroReal: (preco - custoBase - taxa).toFixed(2),
-            data: new Date().toLocaleDateString('pt-BR'),
-            plataforma: plataforma,
-            mes: new Date().getMonth()
-        };
-
-        document.getElementById('res_preco_venda').innerText = `Venda: R$ ${preco.toFixed(2)}`;
-        document.getElementById('res_detalhes').innerHTML = `<div>Custos: R$ ${custoBase.toFixed(2)}</div><div>Lucro: R$ ${calculoAtual.lucroReal}</div>`;
-        document.getElementById('box_resultado').classList.remove('hidden');
-    }
-
-    function salvarVenda() {
-        vendas.unshift(calculoAtual);
-        localStorage.setItem('inovafam_vendas', JSON.stringify(vendas));
-        if(GOOGLE_SCRIPT_URL) fetch(GOOGLE_SCRIPT_URL, {method:'POST', mode:'no-cors', body:JSON.stringify(calculoAtual)});
-        
-        alert("Venda registrada no Histórico e Planilha!");
-        document.getElementById('box_resultado').classList.add('hidden');
-        showTab('history');
+    function renderAnalysis() {
+        const mes = new Date().getMonth();
+        const doMes = vendas.filter(v => v.mes === mes);
+        document.getElementById('st_fat').innerText = "R$ " + doMes.reduce((a,b) => a + b.preco, 0).toFixed(2);
+        document.getElementById('st_lucro').innerText = "R$ " + doMes.reduce((a,b) => a + b.lucro, 0).toFixed(2);
+        document.getElementById('st_ads').innerText = "R$ " + doMes.reduce((a,b) => a + b.ads, 0).toFixed(2);
     }
 
     function showTab(tab) {
@@ -280,52 +344,8 @@
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(tab).classList.remove('hidden');
         event.target.classList.add('active');
-        
-        if(tab === 'config') {
-            document.getElementById('cfg_filamento').value = config.filamento;
-            document.getElementById('cfg_energia').value = config.energia;
-            document.getElementById('cfg_watts').value = config.watts;
-            document.getElementById('cfg_mao').value = config.mao;
-            document.getElementById('cfg_falha').value = config.falha;
-            document.getElementById('cfg_embalagem').value = config.embalagem;
-            renderProdutosCadastrados();
-        }
         if(tab === 'history') renderHistory();
         if(tab === 'analysis') renderAnalysis();
-    }
-
-    function renderHistory() {
-        document.getElementById('lista_vendas').innerHTML = vendas.map(v => `
-            <div class="history-item">
-                <div><b>${v.nome}</b><br><small>${v.data} - ${v.plataforma}</small></div>
-                <div style="text-align:right">
-                    <span style="font-size:0.8em; color:#888;">Custo: R$ ${v.custoTotal}</span><br>
-                    <b style="color:#4ecca3">Venda: R$ ${v.precoVenda}</b><br>
-                    <small style="color:#007bff">Lucro: R$ ${v.lucroReal}</small>
-                </div>
-            </div>`).join('');
-    }
-
-    function renderAnalysis() {
-        const mesAtual = new Date().getMonth();
-        const vendasMes = vendas.filter(v => v.mes === mesAtual);
-        const fat = vendasMes.reduce((a, b) => a + parseFloat(b.precoVenda), 0);
-        const luc = vendasMes.reduce((a, b) => a + parseFloat(b.lucroReal), 0);
-
-        document.getElementById('stat_vendas').innerText = vendasMes.length;
-        document.getElementById('stat_faturamento').innerText = "R$ " + fat.toFixed(2);
-        document.getElementById('stat_lucro').innerText = "R$ " + luc.toFixed(2);
-    }
-
-    function salvarConfig() {
-        config.filamento = parseFloat(document.getElementById('cfg_filamento').value);
-        config.energia = parseFloat(document.getElementById('cfg_energia').value);
-        config.watts = parseFloat(document.getElementById('cfg_watts').value);
-        config.mao = parseFloat(document.getElementById('cfg_mao').value);
-        config.falha = parseFloat(document.getElementById('cfg_falha').value);
-        config.embalagem = parseFloat(document.getElementById('cfg_embalagem').value);
-        localStorage.setItem('inovafam_cfg', JSON.stringify(config));
-        alert("Custos salvos!");
     }
 </script>
 </body>
