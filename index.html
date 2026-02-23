@@ -2,233 +2,635 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InovaFam3D - Luxury ERP v7.3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>InovaFam3D | OS</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Apple Dark Mode Palette & Typography */
         :root {
-            --bg-main: #0b0b0c;
-            --bg-card: #161618;
-            --bg-input: #1f1f22;
-            --border: #2c2c2e;
-            --primary: #007aff;
-            --primary-hover: #0a84ff;
-            --success: #32d74b;
-            --danger: #ff453a;
-            --text-p: #ffffff;
-            --text-s: #a1a1a6;
-            --gold: #ffd60a;
-            --radius: 14px;
+            --bg-base: #000000; --bg-surface: #1c1c1e; --bg-elevated: #2c2c2e;
+            --separator: #38383a; --accent: #0a84ff; --accent-dim: rgba(10, 132, 255, 0.15);
+            --success: #32d74b; --warning: #ffd60a; --danger: #ff453a;
+            --text-primary: #ffffff; --text-secondary: #8e8e93;
+            --radius-lg: 20px; --radius-md: 12px; --radius-sm: 8px;
+            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, system-ui, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-stack); -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-base); color: var(--text-primary); -webkit-font-smoothing: antialiased; display: flex; height: 100vh; overflow: hidden; }
+
+        /* Typography */
+        h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; }
+        h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
+        h3 { font-size: 17px; font-weight: 600; }
+        p, span { font-size: 15px; }
+        .caption { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+
+        /* Layout Architecture */
+        #login-view { position: fixed; inset: 0; background: var(--bg-base); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .login-box { width: 100%; max-width: 360px; padding: 40px 20px; text-align: center; }
         
-        body { 
-            background: var(--bg-main); 
-            color: var(--text-p); 
-            -webkit-font-smoothing: antialiased;
-            display: flex; justify-content: center; align-items: center; min-height: 100vh;
-        }
-
-        .container { width: 100%; max-width: 1200px; padding: 20px; }
-
-        /* Login Repaginado (UX Focus) */
-        #login-screen {
-            position: fixed; inset: 0; background: radial-gradient(circle at center, #1c1c1e 0%, #000 100%);
-            display: flex; align-items: center; justify-content: center; z-index: 10000;
-        }
-
-        .login-card {
-            background: rgba(22, 22, 24, 0.8);
-            backdrop-filter: blur(20px);
-            padding: 40px;
-            border-radius: 28px;
-            border: 1px solid var(--border);
-            width: 380px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            text-align: center;
-        }
-
-        .login-card h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; }
-        .version-tag { font-size: 11px; color: var(--text-s); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 30px; display: block; }
-
-        /* Toggle User Switcher */
-        .user-toggle {
-            display: flex;
-            background: var(--bg-input);
-            padding: 4px;
-            border-radius: var(--radius);
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .user-toggle button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            background: transparent;
-            color: var(--text-s);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            border-radius: 10px;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .user-toggle button.active {
-            background: var(--border);
-            color: var(--text-p);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-
-        input {
-            width: 100%;
-            padding: 16px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            color: white;
-            font-size: 15px;
-            margin-bottom: 16px;
-            transition: border-color 0.2s;
-        }
-
-        input:focus { outline: none; border-color: var(--primary); }
-
-        .btn-login {
-            width: 100%;
-            padding: 16px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: var(--radius);
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: transform 0.1s, background 0.2s;
-        }
-
-        .btn-login:hover { background: var(--primary-hover); }
-        .btn-login:active { transform: scale(0.98); }
-
-        /* Dashboard & Content (Mantendo lógica e refinando visual) */
-        .hidden { display: none !important; }
-        .app-content { display: block; width: 100%; }
+        #app-layout { display: flex; width: 100%; height: 100%; }
         
-        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .kpi-card { 
-            background: var(--bg-card); padding: 24px; border-radius: 20px; 
-            border: 1px solid var(--border); transition: 0.3s;
-        }
-        .kpi-card:hover { border-color: var(--text-s); }
-        .kpi-card span { color: var(--text-s); font-size: 12px; font-weight: 600; text-transform: uppercase; }
-        .kpi-card h2 { font-size: 28px; margin-top: 8px; }
+        /* Sidebar Navigation */
+        .sidebar { width: 260px; background-color: var(--bg-surface); border-right: 1px solid var(--separator); padding: 30px 20px; display: flex; flex-direction: column; gap: 10px; }
+        .sidebar-header { margin-bottom: 30px; padding-left: 10px; }
+        .nav-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; border-radius: var(--radius-md); color: var(--text-secondary); cursor: pointer; transition: 0.2s; font-weight: 500; }
+        .nav-item:hover { background-color: var(--bg-elevated); color: var(--text-primary); }
+        .nav-item.active { background-color: var(--accent-dim); color: var(--accent); font-weight: 600; }
+        .nav-item i { font-size: 18px; width: 20px; text-align: center; }
 
-        .nav { display: flex; gap: 8px; background: var(--bg-card); padding: 6px; border-radius: 16px; margin-bottom: 30px; border: 1px solid var(--border); width: fit-content; }
-        .nav-btn { 
-            padding: 10px 20px; border: none; background: transparent; 
-            color: var(--text-s); cursor: pointer; border-radius: 12px; font-weight: 600;
-        }
-        .nav-btn.active { background: var(--bg-input); color: var(--text-p); }
+        /* Main Content Area */
+        .main-content { flex: 1; overflow-y: auto; padding: 40px; background-color: var(--bg-base); position: relative; }
+        .view-section { display: none; animation: fadeIn 0.3s ease; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* UI Components */
+        .card { background-color: var(--bg-surface); border-radius: var(--radius-lg); padding: 24px; border: 1px solid var(--separator); margin-bottom: 24px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; }
+        
+        .input-group { margin-bottom: 16px; }
+        label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; }
+        input, select { width: 100%; background-color: var(--bg-elevated); border: 1px solid transparent; color: var(--text-primary); padding: 14px 16px; border-radius: var(--radius-md); font-size: 15px; transition: 0.2s; outline: none; }
+        input:focus, select:focus { border-color: var(--accent); background-color: var(--bg-surface); }
+        
+        button { cursor: pointer; border: none; outline: none; transition: 0.2s; font-weight: 600; }
+        .btn-primary { background-color: var(--accent); color: white; padding: 14px 24px; border-radius: var(--radius-md); width: 100%; font-size: 15px; }
+        .btn-primary:active { transform: scale(0.98); opacity: 0.9; }
+        .btn-secondary { background-color: var(--bg-elevated); color: var(--text-primary); padding: 10px 16px; border-radius: var(--radius-md); }
+
+        /* Custom Toggle Switcher */
+        .segmented-control { display: flex; background-color: var(--bg-elevated); padding: 4px; border-radius: var(--radius-md); margin-bottom: 24px; }
+        .segmented-control button { flex: 1; padding: 10px; background: transparent; color: var(--text-secondary); border-radius: var(--radius-sm); font-size: 14px; }
+        .segmented-control button.active { background-color: var(--separator); color: var(--text-primary); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+
+        /* Data Lists & Badges */
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--separator); }
+        .list-item:last-child { border-bottom: none; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge.pendente { background: rgba(255,214,10,0.15); color: var(--warning); }
+        .badge.concluido { background: rgba(50,215,75,0.15); color: var(--success); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            #app-layout { flex-direction: column; }
+            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--separator); padding: 15px; flex-direction: row; justify-content: space-around; overflow-x: auto; }
+            .sidebar-header { display: none; }
+            .nav-item { flex-direction: column; gap: 5px; padding: 10px; font-size: 11px; }
+            .nav-item span { display: block; }
+            .main-content { padding: 20px; }
+            .grid-2 { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-<div id="login-screen">
-    <div class="login-card">
-        <h1>InovaFam3D</h1>
-        <span class="version-tag">Enterprise Solution v7.3</span>
+<div id="login-view">
+    <div class="login-box">
+        <i class="fas fa-cube" style="font-size: 40px; color: var(--accent); margin-bottom: 15px;"></i>
+        <h1 style="margin-bottom: 5px;">InovaFam3D</h1>
+        <p class="caption" style="margin-bottom: 30px;">OS Foundation v8.0</p>
         
-        <div class="user-toggle">
-            <button id="btn-marcelo" class="active" onclick="selectUser('Marcelo')">Marcelo</button>
-            <button id="btn-fernanda" onclick="selectUser('Fernanda')">Fernanda</button>
+        <div class="segmented-control" id="user-switcher">
+            <button class="active" onclick="App.setUser('Marcelo')">Marcelo</button>
+            <button onclick="App.setUser('Fernanda')">Fernanda</button>
         </div>
         
-        <input type="password" id="pass-input" placeholder="Senha Pessoal">
-        <button class="btn-login" onclick="authenticate()">Entrar no Sistema</button>
+        <div class="input-group">
+            <input type="password" id="auth-pass" placeholder="Senha de Acesso" onkeypress="if(event.key === 'Enter') App.login()">
+        </div>
+        <button class="btn-primary" onclick="App.login()">Entrar no Workspace</button>
     </div>
 </div>
 
-<div id="app" class="container hidden">
-    <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
-        <div>
-            <h2 id="welcome-msg" style="font-size: 32px;">Olá, Marcelo</h2>
-            <p id="current-date" style="color: var(--text-s); margin-top: 4px;"></p>
-        </div>
-        <button onclick="logout()" style="color: var(--danger); background: none; border: none; font-weight: 600; cursor: pointer;">Sair</button>
-    </header>
-
-    <div class="kpi-row">
-        <div class="kpi-card"><span>Faturamento Mensal</span><h2 id="kpi-fat">R$ 0,00</h2></div>
-        <div class="kpi-card"><span>Lucro Estimado</span><h2 id="kpi-luc" style="color: var(--success)">R$ 0,00</h2></div>
-        <div class="kpi-card"><span>Volume de Peças</span><h2 id="kpi-vol">0</h2></div>
-    </div>
-
-    <nav class="nav">
-        <button class="nav-btn active" onclick="showTab('dash', this)">Dashboard</button>
-        <button class="nav-btn" onclick="showTab('calc', this)">Calculadora</button>
-        <button class="nav-btn" onclick="showTab('items', this)">Catálogo</button>
-        <button class="nav-btn" onclick="showTab('config', this)">Ajustes</button>
-    </nav>
+<div id="app-layout" style="display: none;">
     
-    <div id="tab-dash" class="tab-content">
-        <div style="background: var(--bg-card); padding: 30px; border-radius: 24px; border: 1px solid var(--border);">
-            <canvas id="mainChart" height="100"></canvas>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-cube" style="color: var(--accent); font-size: 24px;"></i>
+            <h3 style="margin-top: 10px;">InovaFam3D</h3>
+            <p class="caption" id="user-display">Usuário</p>
         </div>
-    </div>
+        <div class="nav-item active" onclick="App.navigate('dash', this)"><i class="fas fa-chart-pie"></i><span>Visão Geral</span></div>
+        <div class="nav-item" onclick="App.navigate('orders', this)"><i class="fas fa-layer-group"></i><span>Pedidos (Kanban)</span></div>
+        <div class="nav-item" onclick="App.navigate('calc', this)"><i class="fas fa-calculator"></i><span>Precificação</span></div>
+        <div class="nav-item" onclick="App.navigate('catalog', this)"><i class="fas fa-box-open"></i><span>Modelos</span></div>
+        <div class="nav-item" onclick="App.navigate('settings', this)"><i class="fas fa-sliders-h"></i><span>Parâmetros</span></div>
+        <div style="flex: 1;"></div>
+        <div class="nav-item" onclick="App.logout()" style="color: var(--danger);"><i class="fas fa-sign-out-alt"></i><span>Encerrar Sessão</span></div>
+    </nav>
+
+    <main class="main-content">
+        
+        <section id="view-dash" class="view-section active">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px;">
+                <div>
+                    <h1>Visão Geral</h1>
+                    <p class="caption" id="dash-date"></p>
+                </div>
+                <select id="dash-month-filter" onchange="App.Views.Dashboard.render()" style="width: auto; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; background: var(--bg-surface);">
+                    </select>
+            </div>
+
+            <div class="grid-3">
+                <div class="card">
+                    <p class="caption">Receita Bruta</p>
+                    <h2 id="kpi-revenue" style="font-size: 32px; margin-top: 5px;">R$ 0,00</h2>
+                </div>
+                <div class="card">
+                    <p class="caption">Lucro Líquido</p>
+                    <h2 id="kpi-profit" style="font-size: 32px; margin-top: 5px; color: var(--success);">R$ 0,00</h2>
+                </div>
+                <div class="card">
+                    <p class="caption">Margem Média</p>
+                    <h2 id="kpi-margin" style="font-size: 32px; margin-top: 5px; color: var(--accent);">0%</h2>
+                </div>
+            </div>
+
+            <div class="card" style="padding: 30px;">
+                <h3 style="margin-bottom: 20px;">Fluxo de Receita</h3>
+                <div style="height: 250px;"><canvas id="revenueChart"></canvas></div>
+            </div>
+        </section>
+
+        <section id="view-orders" class="view-section">
+            <div style="margin-bottom: 30px;">
+                <h1>Fila de Produção</h1>
+                <p class="caption">Acompanhamento de pedidos ativos e concluídos</p>
+            </div>
+            
+            <div class="card">
+                <div id="orders-list">
+                    </div>
+            </div>
+        </section>
+
+        <section id="view-calc" class="view-section">
+            <div style="margin-bottom: 30px;">
+                <h1>Motor de Precificação</h1>
+                <p class="caption">Simulação de custos reais e frete</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Parâmetros da Venda</h3>
+                    <div class="input-group" style="margin-top: 20px;">
+                        <label>1. Selecione a Peça do Catálogo</label>
+                        <select id="calc-model" onchange="App.Views.Calc.run()"></select>
+                    </div>
+                    <div class="input-group">
+                        <label>2. Canal de Escoamento (Taxas)</label>
+                        <select id="calc-channel" onchange="App.Views.Calc.run()">
+                            <option value="pix">Venda Direta / PIX (0%)</option>
+                            <option value="elo7">Elo7 (12% + R$ 1.50)</option>
+                            <option value="ml">Mercado Livre (16% + R$ 5.00)</option>
+                            <option value="shopee">Shopee (20%)</option>
+                        </select>
+                    </div>
+                    <div style="border-top: 1px solid var(--separator); padding-top: 20px; margin-top: 10px;">
+                        <label>3. Simulação de Logística (Opcional)</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="calc-cep" placeholder="CEP Destino (Apenas números)" maxlength="8">
+                            <button class="btn-secondary" onclick="App.Views.Calc.fetchFrete()">Calcular</button>
+                        </div>
+                        <div id="frete-result" style="margin-top: 15px; padding: 15px; background: var(--bg-elevated); border-radius: var(--radius-sm); font-size: 13px; display: none;"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom: 20px;">Análise de Margem</h3>
+                    <div id="pricing-matrix">
+                        <p style="color: var(--text-secondary); font-size: 14px; text-align: center; padding: 40px 0;">Selecione uma peça para gerar a matriz de preços.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-catalog" class="view-section">
+            <div style="margin-bottom: 30px;">
+                <h1>Modelos 3D</h1>
+                <p class="caption">Gerenciamento de peças e tempos estruturais</p>
+            </div>
+
+            <div class="card">
+                <h3>Cadastrar Novo Modelo</h3>
+                <div class="grid-3" style="margin-top: 20px;">
+                    <div class="input-group"><label>Nome do Projeto</label><input type="text" id="cat-name"></div>
+                    <div class="input-group"><label>Material Primário</label><select id="cat-mat"><option value="pla">PLA</option><option value="petg">PETG</option></select></div>
+                    <div class="input-group"><label>Peso (gramas)</label><input type="number" id="cat-weight"></div>
+                    <div class="input-group"><label>Tempo de Máquina (horas)</label><input type="number" id="cat-time" step="0.5"></div>
+                    <div class="input-group"><label>Tempo Humano (Preparação/Acabamento)</label><select id="cat-labor"><option value="0.25">15 min</option><option value="0.5">30 min</option><option value="1">1 hora</option><option value="2">2 horas</option></select></div>
+                    <div class="input-group"><label>Dimensões (A x L x P em cm)</label>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="number" id="cat-h" placeholder="A"><input type="number" id="cat-w" placeholder="L"><input type="number" id="cat-d" placeholder="P">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-primary" style="width: auto; margin-top: 10px;" onclick="App.Views.Catalog.save()">Adicionar ao Catálogo</button>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 15px;">Itens Cadastrados</h3>
+                <div id="catalog-list"></div>
+            </div>
+        </section>
+
+        <section id="view-settings" class="view-section">
+            <div style="margin-bottom: 30px;">
+                <h1>Parâmetros do Sistema</h1>
+                <p class="caption">Custos base e variáveis macro</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Custos de Operação</h3>
+                    <div class="grid-2" style="margin-top: 20px;">
+                        <div class="input-group"><label>Custo PLA (R$/kg)</label><input type="number" id="set-pla"></div>
+                        <div class="input-group"><label>Custo PETG (R$/kg)</label><input type="number" id="set-petg"></div>
+                        <div class="input-group"><label>Energia (R$/kWh)</label><input type="number" id="set-power"></div>
+                        <div class="input-group"><label>Depreciação Máquina (R$/h)</label><input type="number" id="set-dep" title="Custo para repor bicos, correias, etc"></div>
+                        <div class="input-group"><label>Valor da Hora Humana (R$/h)</label><input type="number" id="set-labor" title="Quanto vale a sua hora de trabalho?"></div>
+                        <div class="input-group"><label>Margem de Falha (%)</label><input type="number" id="set-fail" title="Gordura para impressões perdidas"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Logística & Sistema</h3>
+                    <div class="input-group" style="margin-top: 20px;">
+                        <label>CEP Base (Expedição)</label>
+                        <input type="text" id="set-cep" maxlength="8">
+                    </div>
+                    <div class="input-group">
+                        <label>Custo Fixo Embalagem (R$)</label>
+                        <input type="number" id="set-box">
+                    </div>
+                    <div style="margin-top: 40px; border-top: 1px solid var(--separator); padding-top: 20px;">
+                        <button class="btn-primary" onclick="App.Views.Settings.save()">Salvar Todas as Configurações</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
 </div>
 
 <script>
-    const DB_KEY = 'inova_v7_3';
+/**
+ * INOVAFAM3D OS - ENGINE v8.0
+ * Arquitetura SRE: State centralizado, persistência isolada e Views reativas.
+ */
+
+const DB_KEY = 'inova_os_v8';
+
+// --- STATE MANAGEMENT ---
+const Store = {
+    data: {
+        auth: { marcelo: "15@0117Inova", fernanda: "15@0117Inova" },
+        settings: { pla: 110, petg: 100, power: 0.95, dep: 1.5, labor: 35, fail: 10, box: 5, cep: "092109210", watts: 280 },
+        catalog: [],
+        orders: []
+    },
+    currentUser: 'Marcelo',
     
-    let state = {
-        cfg: { pla:110, petg:100, luz:0.95, dep:3.0, watts:280, emb:5.0, falha:10, cepOrigem: "092109210", passMarcelo:"15@0117Inova", passFernanda:"15@0117Inova" },
-        catalog: [], history: [], currentUser: "Marcelo"
-    };
-
-    function selectUser(u) {
-        state.currentUser = u;
-        document.getElementById('btn-marcelo').classList.toggle('active', u === 'Marcelo');
-        document.getElementById('btn-fernanda').classList.toggle('active', u === 'Fernanda');
+    init() {
+        const saved = localStorage.getItem(DB_KEY);
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            // Merge profundo seguro
+            this.data.settings = { ...this.data.settings, ...(parsed.settings || {}) };
+            this.data.catalog = parsed.catalog || [];
+            this.data.orders = parsed.orders || [];
+        }
+    },
+    
+    save() {
+        localStorage.setItem(DB_KEY, JSON.stringify(this.data));
     }
+};
 
-    function authenticate() {
-        loadState();
-        const input = document.getElementById('pass-input').value;
-        const passKey = state.currentUser === 'Marcelo' ? 'passMarcelo' : 'passFernanda';
-        if(input === state.cfg[passKey]) {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('app').classList.remove('hidden');
-            document.getElementById('welcome-msg').innerText = "Olá, " + state.currentUser;
-            init();
-        } else { 
-            alert("Senha incorreta"); 
-            document.getElementById('pass-input').value = "";
+// --- CORE APPLICATION LOGIC ---
+const App = {
+    chartInstance: null,
+
+    init() {
+        Store.init();
+        document.getElementById('dash-date').innerText = new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        this.populateMonthFilter();
+    },
+
+    setUser(name) {
+        Store.currentUser = name;
+        const btns = document.querySelectorAll('#user-switcher button');
+        btns[0].classList.toggle('active', name === 'Marcelo');
+        btns[1].classList.toggle('active', name === 'Fernanda');
+    },
+
+    login() {
+        const pass = document.getElementById('auth-pass').value;
+        const correctPass = Store.currentUser === 'Marcelo' ? Store.data.auth.marcelo : Store.data.auth.fernanda;
+        
+        if (pass === correctPass) {
+            document.getElementById('login-view').style.display = 'none';
+            document.getElementById('app-layout').style.display = 'flex';
+            document.getElementById('user-display').innerText = Store.currentUser;
+            this.Views.Settings.load();
+            this.Views.Catalog.render();
+            this.Views.Dashboard.render();
+            this.Views.Orders.render();
+        } else {
+            alert("Credenciais incorretas.");
+            document.getElementById('auth-pass').value = '';
+        }
+    },
+
+    logout() { location.reload(); },
+
+    navigate(viewId, el) {
+        document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById('view-' + viewId).classList.add('active');
+        el.classList.add('active');
+        
+        if(viewId === 'calc') this.Views.Calc.init();
+        if(viewId === 'orders') this.Views.Orders.render();
+    },
+
+    populateMonthFilter() {
+        const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+        const sel = document.getElementById('dash-month-filter');
+        const currMonth = new Date().getMonth();
+        sel.innerHTML = months.map((m, i) => `<option value="${i}" ${i === currMonth ? 'selected' : ''}>${m}</option>`).join('');
+    },
+
+    // --- VIEW CONTROLLERS ---
+    Views: {
+        Dashboard: {
+            render() {
+                const targetMonth = parseInt(document.getElementById('dash-month-filter').value);
+                // Filtra pedidos concluídos no mês selecionado
+                const completed = Store.data.orders.filter(o => o.status === 'done' && new Date(o.date).getMonth() === targetMonth);
+                
+                const revenue = completed.reduce((sum, o) => sum + o.price, 0);
+                const profit = completed.reduce((sum, o) => sum + o.profit, 0);
+                const margin = revenue > 0 ? (profit / revenue) * 100 : 0;
+
+                document.getElementById('kpi-revenue').innerText = revenue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                document.getElementById('kpi-profit').innerText = profit.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                document.getElementById('kpi-margin').innerText = margin.toFixed(1) + '%';
+
+                this.renderChart(completed);
+            },
+            renderChart(data) {
+                const ctx = document.getElementById('revenueChart').getContext('2d');
+                if (App.chartInstance) App.chartInstance.destroy();
+
+                // Agrupa vendas por dia
+                const daily = {};
+                data.forEach(o => {
+                    const day = new Date(o.date).getDate();
+                    daily[day] = (daily[day] || 0) + o.price;
+                });
+
+                const labels = Object.keys(daily).sort((a,b) => a-b);
+                const values = labels.map(l => daily[l]);
+
+                App.chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels.map(l => `Dia ${l}`),
+                        datasets: [{ label: 'Receita', data: values, backgroundColor: '#0a84ff', borderRadius: 4 }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { 
+                            y: { grid: { color: '#2c2c2e' }, ticks: { color: '#8e8e93' }, beginAtZero: true },
+                            x: { grid: { display: false }, ticks: { color: '#8e8e93' } }
+                        }
+                    }
+                });
+            }
+        },
+
+        Orders: {
+            render() {
+                const container = document.getElementById('orders-list');
+                if (Store.data.orders.length === 0) {
+                    container.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 20px;">Nenhum pedido na fila.</p>`;
+                    return;
+                }
+
+                // Ordena: Pendentes primeiro, depois data mais recente
+                const sorted = [...Store.data.orders].sort((a, b) => {
+                    if(a.status === 'pending' && b.status === 'done') return -1;
+                    if(a.status === 'done' && b.status === 'pending') return 1;
+                    return b.date - a.date;
+                });
+
+                container.innerHTML = sorted.map(o => `
+                    <div class="list-item" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+                        <div style="display: flex; justify-content: space-between; width: 100%;">
+                            <div>
+                                <h3 style="margin-bottom: 4px;">${o.itemName}</h3>
+                                <p class="caption">${o.channel.toUpperCase()} • ${new Date(o.date).toLocaleDateString('pt-BR')}</p>
+                            </div>
+                            <div style="text-align: right;">
+                                <h3 style="color: var(--success);">${o.price.toLocaleString('pt-BR', {style: 'currency', currency:'BRL'})}</h3>
+                                <span class="badge ${o.status === 'pending' ? 'pendente' : 'concluido'}">
+                                    ${o.status === 'pending' ? 'NA FILA' : 'CONCLUÍDO'}
+                                </span>
+                            </div>
+                        </div>
+                        ${o.status === 'pending' ? 
+                            `<button class="btn-secondary" style="width: 100%; margin-top: 10px; color: var(--success);" onclick="App.Views.Orders.markDone(${o.id})"><i class="fas fa-check" style="margin-right: 8px;"></i>Marcar como Concluído</button>` 
+                            : `<button style="background:none; border:none; color: var(--danger); font-size: 13px; cursor: pointer; margin-top: 5px;" onclick="App.Views.Orders.delete(${o.id})">Excluir Registro</button>`
+                        }
+                    </div>
+                `).join('');
+            },
+            add(item, price, profit, channel) {
+                Store.data.orders.push({ id: Date.now(), itemName: item.name, price, profit, channel, status: 'pending', date: Date.now(), user: Store.currentUser });
+                Store.save();
+                alert("Pedido adicionado à fila de produção!");
+                App.Views.Orders.render();
+            },
+            markDone(id) {
+                const order = Store.data.orders.find(o => o.id === id);
+                if(order) { order.status = 'done'; Store.save(); this.render(); App.Views.Dashboard.render(); }
+            },
+            delete(id) {
+                if(confirm("Remover este histórico permanentemente?")) {
+                    Store.data.orders = Store.data.orders.filter(o => o.id !== id);
+                    Store.save(); this.render(); App.Views.Dashboard.render();
+                }
+            }
+        },
+
+        Calc: {
+            init() {
+                const sel = document.getElementById('calc-model');
+                sel.innerHTML = '<option value="">-- Selecione --</option>' + Store.data.catalog.map(i => `<option value="${i.id}">${i.name}</option>`).join('');
+                document.getElementById('pricing-matrix').innerHTML = '';
+                document.getElementById('frete-result').style.display = 'none';
+            },
+            run() {
+                const itemId = document.getElementById('calc-model').value;
+                const channel = document.getElementById('calc-channel').value;
+                if(!itemId) return;
+
+                const item = Store.data.catalog.find(i => i.id == itemId);
+                const s = Store.data.settings;
+                
+                // Engenharia de Custo v8.0 (Fórmula Completa)
+                const matCost = (item.weight / 1000) * s[item.mat];
+                const riskCost = matCost * (s.fail / 100);
+                const powerCost = (s.watts / 1000) * item.time * s.power;
+                const depCost = item.time * s.dep;
+                const laborCost = item.labor * s.labor;
+                
+                const baseCost = matCost + riskCost + powerCost + depCost + laborCost + s.box;
+
+                const margins = [30, 50, 80, 100, 150];
+                let html = `
+                    <div style="background: var(--bg-elevated); padding: 15px; border-radius: var(--radius-sm); margin-bottom: 20px;">
+                        <p class="caption">Custo Real de Fabricação</p>
+                        <h2 style="color: var(--danger); margin-top: 5px;">R$ ${baseCost.toFixed(2)}</h2>
+                        <p style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">(Inclui material, perdas, energia, depreciação, embalagem e ${item.labor}h de mão de obra)</p>
+                    </div>
+                `;
+
+                html += margins.map(m => {
+                    let price = baseCost * (1 + (m/100));
+                    // Markup lógico para marketplaces
+                    if(channel === 'elo7') price = (price + 1.5) / 0.88;
+                    if(channel === 'ml') price = (price + 5) / 0.84;
+                    if(channel === 'shopee') price = price / 0.80;
+
+                    const fees = (channel === 'pix' ? 0 : (channel === 'elo7' ? (price*0.12)+1.5 : (channel === 'ml' ? (price*0.16)+5 : price*0.20)));
+                    const profit = price - fees - baseCost;
+
+                    return `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--separator);">
+                            <div>
+                                <span class="badge" style="background: var(--bg-elevated); color: var(--text-primary); margin-bottom: 5px; display: inline-block;">Meta: ${m}%</span>
+                                <h3>R$ ${price.toFixed(2)}</h3>
+                                <p style="font-size: 12px; color: var(--success);">Lucro: R$ ${profit.toFixed(2)}</p>
+                            </div>
+                            <button class="btn-primary" style="width: auto; padding: 10px 20px;" onclick='App.Views.Orders.add(${JSON.stringify(item)}, ${price}, ${profit}, "${channel}")'>Gerar Pedido</button>
+                        </div>
+                    `;
+                }).join('');
+
+                document.getElementById('pricing-matrix').innerHTML = html;
+            },
+            async fetchFrete() {
+                const cep = document.getElementById('calc-cep').value.replace(/\D/g, '');
+                const resEl = document.getElementById('frete-result');
+                const itemId = document.getElementById('calc-model').value;
+                
+                if(cep.length !== 8) { alert("CEP Inválido"); return; }
+                if(!itemId) { alert("Selecione o produto para calcular a cubagem."); return; }
+
+                const item = Store.data.catalog.find(i => i.id == itemId);
+                resEl.style.display = 'block';
+                resEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Consultando correios...';
+
+                try {
+                    const req = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                    const data = await req.json();
+                    if(data.erro) throw new Error();
+
+                    // Simulação Logística (Distância + Cubagem Real)
+                    const ufOrigem = Store.data.settings.cep.substring(0,2);
+                    const ufDestino = cep.substring(0,2);
+                    let base = ufOrigem === ufDestino ? 18.90 : 36.50;
+                    
+                    const cubagem = (item.dim.h * item.dim.w * item.dim.d) / 6000;
+                    if(cubagem > 1) base += (cubagem * 5); // Adicional por volume
+
+                    resEl.innerHTML = `
+                        <b>Destino:</b> ${data.localidade} - ${data.uf}<br>
+                        <b>Volume (Cubagem):</b> ${cubagem.toFixed(2)} kg<br>
+                        <span style="color: var(--accent); font-weight: 600; display: block; margin-top: 5px;">PAC Estimado: R$ ${base.toFixed(2)}</span>
+                    `;
+                } catch(e) {
+                    resEl.innerHTML = '<span style="color: var(--danger);">Falha ao consultar API.</span>';
+                }
+            }
+        },
+
+        Catalog: {
+            render() {
+                const container = document.getElementById('catalog-list');
+                container.innerHTML = Store.data.catalog.map(i => `
+                    <div class="list-item">
+                        <div>
+                            <h3 style="margin-bottom: 4px;">${i.name}</h3>
+                            <p class="caption">${i.mat.toUpperCase()} • ${i.weight}g • ${i.time}h print</p>
+                        </div>
+                        <button style="background:none; border:none; color: var(--danger); cursor: pointer; padding: 10px;" onclick="App.Views.Catalog.delete(${i.id})"><i class="fas fa-trash"></i></button>
+                    </div>
+                `).join('');
+            },
+            save() {
+                const id = Date.now();
+                const name = document.getElementById('cat-name').value;
+                const mat = document.getElementById('cat-mat').value;
+                const weight = parseFloat(document.getElementById('cat-weight').value);
+                const time = parseFloat(document.getElementById('cat-time').value);
+                const labor = parseFloat(document.getElementById('cat-labor').value);
+                const h = parseFloat(document.getElementById('cat-h').value || 10);
+                const w = parseFloat(document.getElementById('cat-w').value || 10);
+                const d = parseFloat(document.getElementById('cat-d').value || 10);
+
+                if(!name || !weight || !time) return alert("Preencha Nome, Peso e Tempo.");
+
+                Store.data.catalog.push({ id, name, mat, weight, time, labor, dim: {h,w,d} });
+                Store.save();
+                this.render();
+                
+                // Limpa campos principais
+                ['cat-name', 'cat-weight', 'cat-time'].forEach(id => document.getElementById(id).value = '');
+            },
+            delete(id) {
+                Store.data.catalog = Store.data.catalog.filter(i => i.id !== id);
+                Store.save(); this.render();
+            }
+        },
+
+        Settings: {
+            load() {
+                const s = Store.data.settings;
+                document.getElementById('set-pla').value = s.pla;
+                document.getElementById('set-petg').value = s.petg;
+                document.getElementById('set-power').value = s.power;
+                document.getElementById('set-dep').value = s.dep;
+                document.getElementById('set-labor').value = s.labor;
+                document.getElementById('set-fail').value = s.fail;
+                document.getElementById('set-cep').value = s.cep;
+                document.getElementById('set-box').value = s.box;
+            },
+            save() {
+                const s = Store.data.settings;
+                s.pla = parseFloat(document.getElementById('set-pla').value);
+                s.petg = parseFloat(document.getElementById('set-petg').value);
+                s.power = parseFloat(document.getElementById('set-power').value);
+                s.dep = parseFloat(document.getElementById('set-dep').value);
+                s.labor = parseFloat(document.getElementById('set-labor').value);
+                s.fail = parseFloat(document.getElementById('set-fail').value);
+                s.cep = document.getElementById('set-cep').value;
+                s.box = parseFloat(document.getElementById('set-box').value);
+                Store.save();
+                alert("Parâmetros do sistema atualizados com sucesso.");
+            }
         }
     }
+};
 
-    function init() {
-        document.getElementById('current-date').innerText = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-        // Simulação de carregamento de dados
-        document.getElementById('kpi-fat').innerText = "R$ 1.250,00";
-        document.getElementById('kpi-luc').innerText = "R$ 780,00";
-        document.getElementById('kpi-vol').innerText = "42";
-    }
-
-    function loadState() {
-        const saved = localStorage.getItem(DB_KEY);
-        if (saved) state = { ...state, ...JSON.parse(saved) };
-    }
-
-    function showTab(t, btn) {
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        // Lógica de troca de aba simplificada para o exemplo
-    }
-
-    function logout() { location.reload(); }
+// Bootstrap
+window.onload = () => App.init();
 </script>
 </body>
 </html>
