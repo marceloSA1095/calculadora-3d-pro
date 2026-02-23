@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>InovaFam3D | OS v8.1</title>
+    <title>InovaFam3D | Cloud OS</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Apple Dark Mode Palette & Typography (Mantido da v8.0) */
+        /* Paleta Apple Dark Mode */
         :root {
             --bg-base: #000000; --bg-surface: #1c1c1e; --bg-elevated: #2c2c2e;
             --separator: #38383a; --accent: #0a84ff; --accent-dim: rgba(10, 132, 255, 0.15);
@@ -26,6 +26,7 @@
         p, span { font-size: 15px; }
         .caption { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
 
+        /* Telas e Layout */
         #login-view { position: fixed; inset: 0; background: var(--bg-base); display: flex; align-items: center; justify-content: center; z-index: 9999; }
         .login-box { width: 100%; max-width: 360px; padding: 40px 20px; text-align: center; }
         #app-layout { display: flex; width: 100%; height: 100%; }
@@ -42,6 +43,7 @@
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Componentes */
         .card { background-color: var(--bg-surface); border-radius: var(--radius-lg); padding: 24px; border: 1px solid var(--separator); margin-bottom: 24px; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
         .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; }
@@ -66,6 +68,11 @@
         .badge.pendente { background: rgba(255,214,10,0.15); color: var(--warning); }
         .badge.concluido { background: rgba(50,215,75,0.15); color: var(--success); }
 
+        /* Loader de Conexão */
+        #cloud-status { position: fixed; bottom: 20px; right: 20px; background: var(--bg-elevated); padding: 10px 20px; border-radius: 20px; font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; z-index: 10000; border: 1px solid var(--separator); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--warning); }
+        .status-dot.online { background: var(--success); }
+
         @media (max-width: 768px) {
             #app-layout { flex-direction: column; }
             .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--separator); padding: 15px; flex-direction: row; justify-content: space-around; overflow-x: auto; }
@@ -79,11 +86,16 @@
 </head>
 <body>
 
+<div id="cloud-status">
+    <div id="status-indicator" class="status-dot"></div>
+    <span id="status-text">Conectando Firebase...</span>
+</div>
+
 <div id="login-view">
     <div class="login-box">
-        <i class="fas fa-database" style="font-size: 40px; color: var(--accent); margin-bottom: 15px;"></i>
+        <i class="fas fa-cloud" style="font-size: 40px; color: var(--accent); margin-bottom: 15px;"></i>
         <h1 style="margin-bottom: 5px;">InovaFam3D</h1>
-        <p class="caption" style="margin-bottom: 30px;">OS Foundation v8.1 (Data Bridge)</p>
+        <p class="caption" style="margin-bottom: 30px;">Cloud OS v9.0</p>
         
         <div class="segmented-control" id="user-switcher">
             <button class="active" onclick="App.setUser('Marcelo')">Marcelo</button>
@@ -105,12 +117,12 @@
             <p class="caption" id="user-display">Usuário</p>
         </div>
         <div class="nav-item active" onclick="App.navigate('dash', this)"><i class="fas fa-chart-pie"></i><span>Visão Geral</span></div>
-        <div class="nav-item" onclick="App.navigate('orders', this)"><i class="fas fa-layer-group"></i><span>Pedidos (Kanban)</span></div>
+        <div class="nav-item" onclick="App.navigate('orders', this)"><i class="fas fa-layer-group"></i><span>Fila de Pedidos</span></div>
         <div class="nav-item" onclick="App.navigate('calc', this)"><i class="fas fa-calculator"></i><span>Precificação</span></div>
-        <div class="nav-item" onclick="App.navigate('catalog', this)"><i class="fas fa-box-open"></i><span>Modelos</span></div>
+        <div class="nav-item" onclick="App.navigate('catalog', this)"><i class="fas fa-box-open"></i><span>Catálogo Cloud</span></div>
         <div class="nav-item" onclick="App.navigate('settings', this)"><i class="fas fa-sliders-h"></i><span>Parâmetros</span></div>
         <div style="flex: 1;"></div>
-        <div class="nav-item" onclick="App.logout()" style="color: var(--danger);"><i class="fas fa-sign-out-alt"></i><span>Encerrar Sessão</span></div>
+        <div class="nav-item" onclick="App.logout()" style="color: var(--danger);"><i class="fas fa-sign-out-alt"></i><span>Sair da Nuvem</span></div>
     </nav>
 
     <main class="main-content">
@@ -127,21 +139,32 @@
                 <div class="card"><p class="caption">Lucro Líquido</p><h2 id="kpi-profit" style="font-size: 32px; margin-top: 5px; color: var(--success);">R$ 0,00</h2></div>
                 <div class="card"><p class="caption">Margem Média</p><h2 id="kpi-margin" style="font-size: 32px; margin-top: 5px; color: var(--accent);">0%</h2></div>
             </div>
-            <div class="card" style="padding: 30px;"><h3 style="margin-bottom: 20px;">Fluxo de Receita</h3><div style="height: 250px;"><canvas id="revenueChart"></canvas></div></div>
+            <div class="card" style="padding: 30px;"><h3 style="margin-bottom: 20px;">Fluxo de Receita Diário</h3><div style="height: 250px;"><canvas id="revenueChart"></canvas></div></div>
         </section>
 
         <section id="view-orders" class="view-section">
-            <div style="margin-bottom: 30px;"><h1>Fila de Produção</h1><p class="caption">Acompanhamento de pedidos ativos e concluídos</p></div>
+            <div style="margin-bottom: 30px;"><h1>Fila de Produção</h1><p class="caption">Sincronizado em tempo real</p></div>
             <div class="card"><div id="orders-list"></div></div>
         </section>
 
         <section id="view-calc" class="view-section">
-            <div style="margin-bottom: 30px;"><h1>Motor de Precificação</h1><p class="caption">Simulação de custos reais e frete</p></div>
+            <div style="margin-bottom: 30px;"><h1>Motor de Precificação</h1><p class="caption">Cálculos baseados nos parâmetros da nuvem</p></div>
             <div class="grid-2">
                 <div class="card">
                     <h3>Parâmetros da Venda</h3>
-                    <div class="input-group" style="margin-top: 20px;"><label>1. Selecione a Peça</label><select id="calc-model" onchange="App.Views.Calc.run()"></select></div>
-                    <div class="input-group"><label>2. Canal de Escoamento</label><select id="calc-channel" onchange="App.Views.Calc.run()"><option value="pix">PIX (0%)</option><option value="elo7">Elo7 (12% + R$ 1.50)</option><option value="ml">Mercado Livre (16% + R$ 5.00)</option><option value="shopee">Shopee (20%)</option></select></div>
+                    <div class="input-group" style="margin-top: 20px;">
+                        <label>1. Selecione a Peça</label>
+                        <select id="calc-model" onchange="App.Views.Calc.run()"></select>
+                    </div>
+                    <div class="input-group">
+                        <label>2. Canal de Escoamento</label>
+                        <select id="calc-channel" onchange="App.Views.Calc.run()">
+                            <option value="pix">PIX (0%)</option>
+                            <option value="elo7">Elo7 (12% + R$ 1.50)</option>
+                            <option value="ml">Mercado Livre (16% + R$ 5.00)</option>
+                            <option value="shopee">Shopee (20%)</option>
+                        </select>
+                    </div>
                     <div style="border-top: 1px solid var(--separator); padding-top: 20px; margin-top: 10px;">
                         <label>3. Simulação de Logística (Opcional)</label>
                         <div style="display: flex; gap: 10px;"><input type="text" id="calc-cep" placeholder="CEP Destino" maxlength="8"><button class="btn-secondary" onclick="App.Views.Calc.fetchFrete()">Calcular</button></div>
@@ -153,7 +176,7 @@
         </section>
 
         <section id="view-catalog" class="view-section">
-            <div style="margin-bottom: 30px;"><h1>Modelos 3D</h1><p class="caption">Gerenciamento de peças e tempos estruturais</p></div>
+            <div style="margin-bottom: 30px;"><h1>Catálogo de Modelos</h1><p class="caption">Banco de dados centralizado</p></div>
             <div class="card">
                 <h3>Cadastrar Novo Modelo</h3>
                 <div class="grid-3" style="margin-top: 20px;">
@@ -164,16 +187,16 @@
                     <div class="input-group"><label>Tempo Humano</label><select id="cat-labor"><option value="0.25">15 min</option><option value="0.5" selected>30 min</option><option value="1">1 hora</option><option value="2">2 horas</option></select></div>
                     <div class="input-group"><label>Dimensões (A x L x P em cm)</label><div style="display: flex; gap: 5px;"><input type="number" id="cat-h" placeholder="A"><input type="number" id="cat-w" placeholder="L"><input type="number" id="cat-d" placeholder="P"></div></div>
                 </div>
-                <button class="btn-primary" style="width: auto; margin-top: 10px;" onclick="App.Views.Catalog.save()">Adicionar ao Catálogo</button>
+                <button class="btn-primary" style="width: auto; margin-top: 10px;" onclick="App.Views.Catalog.save()">Salvar na Nuvem</button>
             </div>
-            <div class="card"><h3 style="margin-bottom: 15px;">Itens Cadastrados</h3><div id="catalog-list"></div></div>
+            <div class="card"><h3 style="margin-bottom: 15px;">Itens Sincronizados</h3><div id="catalog-list"></div></div>
         </section>
 
         <section id="view-settings" class="view-section">
-            <div style="margin-bottom: 30px;"><h1>Parâmetros do Sistema</h1><p class="caption">Custos base e variáveis macro</p></div>
+            <div style="margin-bottom: 30px;"><h1>Parâmetros da Operação</h1><p class="caption">Variáveis globais de custo</p></div>
             <div class="grid-2">
                 <div class="card">
-                    <h3>Custos de Operação</h3>
+                    <h3>Custos Base</h3>
                     <div class="grid-2" style="margin-top: 20px;">
                         <div class="input-group"><label>Custo PLA (R$/kg)</label><input type="number" id="set-pla"></div>
                         <div class="input-group"><label>Custo PETG (R$/kg)</label><input type="number" id="set-petg"></div>
@@ -187,139 +210,465 @@
                     <h3>Logística & Sistema</h3>
                     <div class="input-group" style="margin-top: 20px;"><label>CEP Base</label><input type="text" id="set-cep" maxlength="8"></div>
                     <div class="input-group"><label>Custo Fixo Embalagem (R$)</label><input type="number" id="set-box"></div>
-                    <div style="margin-top: 40px; border-top: 1px solid var(--separator); padding-top: 20px;"><button class="btn-primary" onclick="App.Views.Settings.save()">Salvar Todas as Configurações</button></div>
+                    <div style="margin-top: 40px; border-top: 1px solid var(--separator); padding-top: 20px;">
+                        <button class="btn-primary" onclick="App.Views.Settings.save()">Atualizar Configurações</button>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
 </div>
 
-<script>
-/**
- * INOVAFAM3D OS - ENGINE v8.1 (Data Bridge / ETL)
- */
-const DB_KEY = 'inova_os_v8_1';
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { 
+        getFirestore, 
+        collection, 
+        doc, 
+        setDoc, 
+        getDoc, 
+        addDoc, 
+        deleteDoc, 
+        updateDoc, 
+        onSnapshot, 
+        query, 
+        orderBy 
+    } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-const Store = {
-    data: {
+    // 1. Configuração recebida do Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyDqWO24ihthEEJORidmpVIaVSfd-pKz-0A",
+        authDomain: "inovafam3d.firebaseapp.com",
+        projectId: "inovafam3d",
+        storageBucket: "inovafam3d.firebasestorage.app",
+        messagingSenderId: "867870082459",
+        appId: "1:867870082459:web:0223439b0d5068dadf8d3e",
+        measurementId: "G-BXYXX0CBTX"
+    };
+
+    // 2. Inicializando os Serviços
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // 3. Estrutura de Estado (Agora conectada à nuvem)
+    const Store = {
         auth: { marcelo: "15@0117Inova", fernanda: "15@0117Inova" },
+        currentUser: 'Marcelo',
+        
+        // Dados mantidos em memória para renderização rápida
         settings: { pla: 110, petg: 100, power: 0.95, dep: 1.5, labor: 35, fail: 10, box: 5, cep: "092109210", watts: 280 },
-        catalog: [], orders: [], isMigrated: false
-    },
-    currentUser: 'Marcelo',
-    
-    init() {
-        const saved = localStorage.getItem(DB_KEY);
-        if (saved) {
-            const parsed = JSON.parse(saved);
-            this.data = { ...this.data, ...parsed, settings: { ...this.data.settings, ...(parsed.settings || {}) } };
-        } else {
-            this.runETLMigration(); // Rotina de resgate de dados (SRE)
-        }
-    },
+        catalog: [],
+        orders: [],
 
-    // A MÁGICA DOS ENGENHEIROS DE DADOS (ETL)
-    runETLMigration() {
-        const legacyKeys = ['inova_v7_4', 'inova_v7_3', 'inova_v7_2', 'inova_v7_1', 'inova_v7_final'];
-        let legacyData = null;
-
-        for (let key of legacyKeys) {
-            const raw = localStorage.getItem(key);
-            if (raw) { legacyData = JSON.parse(raw); console.log('🔄 Dados recuperados da versão: ' + key); break; }
-        }
-
-        if (legacyData) {
-            // 1. Extração e Transformação do Catálogo (Português -> Inglês)
-            if (legacyData.catalog) {
-                this.data.catalog = legacyData.catalog.map(old => ({
-                    id: old.id || Date.now() + Math.random(),
-                    name: old.nome || 'Item Migrado',
-                    mat: old.tipo || 'pla',
-                    weight: parseFloat(old.peso) || 0,
-                    time: parseFloat(old.tempo) || 0,
-                    labor: 0.5, // Padrão injetado para compatibilidade com v8
-                    dim: { h: parseFloat(old.alt) || 10, w: parseFloat(old.larg) || 10, d: parseFloat(old.prof) || 10 }
-                }));
-            }
-
-            // 2. Extração e Transformação do Histórico de Vendas para Pedidos
-            if (legacyData.history) {
-                this.data.orders = legacyData.history.map(old => {
-                    let timestamp = Date.now(); // Fallback
-                    if (old.data) { // Tenta converter DD/MM/YYYY para milissegundos
-                        const parts = old.data.split('/');
-                        if (parts.length === 3) timestamp = new Date(`${parts[2]}-${parts[1]}-${parts[0]}T12:00:00`).getTime();
+        // Ativa os "Ouvintes" do Firebase (Sincronização em Tempo Real)
+        initCloudSync() {
+            // Sincronizando Configurações
+            const settingsRef = doc(db, "system", "settings");
+            onSnapshot(settingsRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    this.settings = { ...this.settings, ...docSnap.data() };
+                    if (document.getElementById('view-settings').classList.contains('active')) {
+                        App.Views.Settings.load();
                     }
-                    return {
-                        id: old.id || Date.now() + Math.random(),
-                        itemName: old.nome || 'Venda Legada',
-                        price: parseFloat(old.preco) || 0,
-                        profit: parseFloat(old.lucro) || 0,
-                        channel: (old.plat || 'pix').toLowerCase(),
-                        status: 'done', // Se estava no histórico v7, já foi concluído
-                        date: timestamp,
-                        user: old.user || 'Marcelo'
+                } else {
+                    // Se não existir na nuvem, cria o documento padrão
+                    setDoc(settingsRef, this.settings);
+                }
+            });
+
+            // Sincronizando Catálogo
+            const catalogRef = collection(db, "catalog");
+            onSnapshot(catalogRef, (snapshot) => {
+                this.catalog = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                App.Views.Catalog.render();
+                App.Views.Calc.init(); // Atualiza os dropdowns da calculadora
+            });
+
+            // Sincronizando Pedidos (Ordenados por data)
+            const ordersRef = query(collection(db, "orders"), orderBy("date", "desc"));
+            onSnapshot(ordersRef, (snapshot) => {
+                this.orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                App.Views.Orders.render();
+                App.Views.Dashboard.render(); // Atualiza os gráficos
+            });
+
+            // Feedback Visual de Conexão
+            document.getElementById('status-indicator').classList.add('online');
+            document.getElementById('status-text').innerText = "Nuvem Conectada e Sincronizada";
+        }
+    };
+
+    // 4. Lógica de Controle da Aplicação (App Controller)
+    const App = {
+        chartInstance: null,
+
+        init() {
+            document.getElementById('dash-date').innerText = new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            this.populateMonthFilter();
+        },
+
+        setUser(name) {
+            Store.currentUser = name;
+            const btns = document.querySelectorAll('#user-switcher button');
+            btns[0].classList.toggle('active', name === 'Marcelo');
+            btns[1].classList.toggle('active', name === 'Fernanda');
+        },
+
+        login() {
+            const pass = document.getElementById('auth-pass').value;
+            const correctPass = Store.currentUser === 'Marcelo' ? Store.auth.marcelo : Store.auth.fernanda;
+            
+            if (pass === correctPass) {
+                document.getElementById('login-view').style.display = 'none';
+                document.getElementById('app-layout').style.display = 'flex';
+                document.getElementById('user-display').innerText = Store.currentUser;
+                
+                // Conecta ao Firebase somente após o login
+                Store.initCloudSync();
+                
+                // Força renderização inicial
+                setTimeout(() => {
+                    this.Views.Settings.load();
+                    this.Views.Catalog.render();
+                    this.Views.Dashboard.render();
+                    this.Views.Orders.render();
+                }, 500);
+
+            } else {
+                alert("Senha incorreta.");
+                document.getElementById('auth-pass').value = '';
+            }
+        },
+
+        logout() { location.reload(); },
+
+        navigate(viewId, el) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('view-' + viewId).classList.add('active');
+            el.classList.add('active');
+            
+            if(viewId === 'calc') this.Views.Calc.init();
+            if(viewId === 'orders') this.Views.Orders.render();
+        },
+
+        populateMonthFilter() {
+            const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            const sel = document.getElementById('dash-month-filter');
+            const currMonth = new Date().getMonth();
+            sel.innerHTML = months.map((m, i) => `<option value="${i}" ${i === currMonth ? 'selected' : ''}>${m}</option>`).join('');
+        },
+
+        // --- Módulos das Telas ---
+        Views: {
+            Dashboard: {
+                render() {
+                    const targetMonth = parseInt(document.getElementById('dash-month-filter').value);
+                    const completed = Store.orders.filter(o => o.status === 'done' && new Date(o.date).getMonth() === targetMonth);
+                    
+                    const revenue = completed.reduce((sum, o) => sum + o.price, 0);
+                    const profit = completed.reduce((sum, o) => sum + o.profit, 0);
+                    const margin = revenue > 0 ? (profit / revenue) * 100 : 0;
+
+                    document.getElementById('kpi-revenue').innerText = revenue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    document.getElementById('kpi-profit').innerText = profit.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    document.getElementById('kpi-margin').innerText = margin.toFixed(1) + '%';
+
+                    this.renderChart(completed);
+                },
+                renderChart(data) {
+                    const ctx = document.getElementById('revenueChart').getContext('2d');
+                    if (App.chartInstance) App.chartInstance.destroy();
+
+                    const daily = {};
+                    data.forEach(o => {
+                        const day = new Date(o.date).getDate();
+                        daily[day] = (daily[day] || 0) + o.price;
+                    });
+
+                    const labels = Object.keys(daily).sort((a,b) => a-b);
+                    const values = labels.map(l => daily[l]);
+
+                    App.chartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels.map(l => `Dia ${l}`),
+                            datasets: [{ label: 'Receita', data: values, backgroundColor: '#0a84ff', borderRadius: 4 }]
+                        },
+                        options: {
+                            responsive: true, maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: { 
+                                y: { grid: { color: '#2c2c2e' }, ticks: { color: '#8e8e93' }, beginAtZero: true },
+                                x: { grid: { display: false }, ticks: { color: '#8e8e93' } }
+                            }
+                        }
+                    });
+                }
+            },
+
+            Orders: {
+                render() {
+                    const container = document.getElementById('orders-list');
+                    if (Store.orders.length === 0) {
+                        container.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 20px;">Nenhum pedido na base de dados.</p>`;
+                        return;
+                    }
+
+                    // Exibe pendentes primeiro
+                    const sorted = [...Store.orders].sort((a, b) => {
+                        if(a.status === 'pending' && b.status === 'done') return -1;
+                        if(a.status === 'done' && b.status === 'pending') return 1;
+                        return 0; // Já está ordenado por data na query do Firebase
+                    });
+
+                    container.innerHTML = sorted.map(o => `
+                        <div class="list-item" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                <div>
+                                    <h3 style="margin-bottom: 4px;">${o.itemName}</h3>
+                                    <p class="caption">${o.channel.toUpperCase()} • ${new Date(o.date).toLocaleDateString('pt-BR')}</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <h3 style="color: var(--success);">${o.price.toLocaleString('pt-BR', {style: 'currency', currency:'BRL'})}</h3>
+                                    <span class="badge ${o.status === 'pending' ? 'pendente' : 'concluido'}">
+                                        ${o.status === 'pending' ? 'NA FILA' : 'CONCLUÍDO'}
+                                    </span>
+                                </div>
+                            </div>
+                            ${o.status === 'pending' ? 
+                                `<button class="btn-secondary" style="width: 100%; margin-top: 10px; color: var(--success);" onclick="App.Views.Orders.markDone('${o.id}')"><i class="fas fa-check" style="margin-right: 8px;"></i>Marcar como Concluído</button>` 
+                                : `<button style="background:none; border:none; color: var(--danger); font-size: 13px; cursor: pointer; margin-top: 5px;" onclick="App.Views.Orders.delete('${o.id}')">Excluir da Nuvem</button>`
+                            }
+                        </div>
+                    `).join('');
+                },
+                
+                // Grava no Firestore
+                async add(item, price, profit, channel) {
+                    try {
+                        await addDoc(collection(db, "orders"), {
+                            itemName: item.name,
+                            price: price,
+                            profit: profit,
+                            channel: channel,
+                            status: 'pending',
+                            date: Date.now(),
+                            user: Store.currentUser
+                        });
+                        alert("Pedido enviado para a nuvem!");
+                    } catch (e) {
+                        console.error("Erro ao adicionar pedido: ", e);
+                        alert("Falha na comunicação com o banco de dados.");
+                    }
+                },
+
+                // Atualiza o Firestore
+                async markDone(id) {
+                    try {
+                        const orderRef = doc(db, "orders", id);
+                        await updateDoc(orderRef, { status: 'done' });
+                    } catch (e) { console.error(e); }
+                },
+
+                // Deleta do Firestore
+                async delete(id) {
+                    if(confirm("Remover este registro permanentemente do banco de dados?")) {
+                        try {
+                            await deleteDoc(doc(db, "orders", id));
+                        } catch (e) { console.error(e); }
+                    }
+                }
+            },
+
+            Calc: {
+                init() {
+                    const sel = document.getElementById('calc-model');
+                    sel.innerHTML = '<option value="">-- Selecione do Catálogo --</option>' + 
+                        Store.catalog.map(i => `<option value="${i.id}">${i.name}</option>`).join('');
+                    document.getElementById('pricing-matrix').innerHTML = '';
+                    document.getElementById('frete-result').style.display = 'none';
+                },
+                run() {
+                    const itemId = document.getElementById('calc-model').value;
+                    const channel = document.getElementById('calc-channel').value;
+                    if(!itemId) return;
+
+                    const item = Store.catalog.find(i => i.id === itemId);
+                    const s = Store.settings;
+                    
+                    const matCost = (item.weight / 1000) * s[item.mat];
+                    const riskCost = matCost * (s.fail / 100);
+                    const powerCost = (s.watts / 1000) * item.time * s.power;
+                    const depCost = item.time * s.dep;
+                    const laborCost = item.labor * s.labor;
+                    
+                    const baseCost = matCost + riskCost + powerCost + depCost + laborCost + s.box;
+
+                    const margins = [30, 50, 80, 100, 150];
+                    let html = `
+                        <div style="background: var(--bg-elevated); padding: 15px; border-radius: var(--radius-sm); margin-bottom: 20px;">
+                            <p class="caption">Custo Real de Fabricação</p>
+                            <h2 style="color: var(--danger); margin-top: 5px;">R$ ${baseCost.toFixed(2)}</h2>
+                        </div>
+                    `;
+
+                    html += margins.map(m => {
+                        let price = baseCost * (1 + (m/100));
+                        if(channel === 'elo7') price = (price + 1.5) / 0.88;
+                        if(channel === 'ml') price = (price + 5) / 0.84;
+                        if(channel === 'shopee') price = price / 0.80;
+
+                        const fees = (channel === 'pix' ? 0 : (channel === 'elo7' ? (price*0.12)+1.5 : (channel === 'ml' ? (price*0.16)+5 : price*0.20)));
+                        const profit = price - fees - baseCost;
+
+                        // Passa os dados como JSON para o botão de Pedido
+                        const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
+
+                        return `
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--separator);">
+                                <div>
+                                    <span class="badge" style="background: var(--bg-elevated); color: var(--text-primary); margin-bottom: 5px; display: inline-block;">Meta: ${m}%</span>
+                                    <h3>R$ ${price.toFixed(2)}</h3>
+                                    <p style="font-size: 12px; color: var(--success);">Lucro: R$ ${profit.toFixed(2)}</p>
+                                </div>
+                                <button class="btn-primary" style="width: auto; padding: 10px 20px;" onclick="App.Views.Orders.add(${itemJson}, ${price}, ${profit}, '${channel}')">Gerar Pedido</button>
+                            </div>
+                        `;
+                    }).join('');
+
+                    document.getElementById('pricing-matrix').innerHTML = html;
+                },
+                async fetchFrete() {
+                    const cep = document.getElementById('calc-cep').value.replace(/\D/g, '');
+                    const resEl = document.getElementById('frete-result');
+                    const itemId = document.getElementById('calc-model').value;
+                    
+                    if(cep.length !== 8) { alert("CEP Inválido"); return; }
+                    if(!itemId) { alert("Selecione o produto."); return; }
+
+                    const item = Store.catalog.find(i => i.id === itemId);
+                    resEl.style.display = 'block';
+                    resEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Consultando...';
+
+                    try {
+                        const req = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                        const data = await req.json();
+                        if(data.erro) throw new Error();
+
+                        const ufOrigem = Store.settings.cep.substring(0,2);
+                        const ufDestino = cep.substring(0,2);
+                        let base = ufOrigem === ufDestino ? 18.90 : 36.50;
+                        
+                        const cubagem = (item.dim.h * item.dim.w * item.dim.d) / 6000;
+                        if(cubagem > 1) base += (cubagem * 5); 
+
+                        resEl.innerHTML = `
+                            <b>Destino:</b> ${data.localidade} - ${data.uf}<br>
+                            <b>Volume:</b> ${cubagem.toFixed(2)} kg<br>
+                            <span style="color: var(--accent); font-weight: 600; display: block; margin-top: 5px;">PAC Est.: R$ ${base.toFixed(2)}</span>
+                        `;
+                    } catch(e) {
+                        resEl.innerHTML = '<span style="color: var(--danger);">Falha ao consultar API.</span>';
+                    }
+                }
+            },
+
+            Catalog: {
+                render() {
+                    const container = document.getElementById('catalog-list');
+                    container.innerHTML = Store.catalog.map(i => `
+                        <div class="list-item">
+                            <div>
+                                <h3 style="margin-bottom: 4px;">${i.name}</h3>
+                                <p class="caption">${i.mat.toUpperCase()} • ${i.weight}g • ${i.time}h print</p>
+                            </div>
+                            <button style="background:none; border:none; color: var(--danger); cursor: pointer; padding: 10px;" onclick="App.Views.Catalog.delete('${i.id}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `).join('');
+                },
+
+                // Grava no Firestore
+                async save() {
+                    const name = document.getElementById('cat-name').value;
+                    const mat = document.getElementById('cat-mat').value;
+                    const weight = parseFloat(document.getElementById('cat-weight').value);
+                    const time = parseFloat(document.getElementById('cat-time').value);
+                    const labor = parseFloat(document.getElementById('cat-labor').value);
+                    const h = parseFloat(document.getElementById('cat-h').value || 10);
+                    const w = parseFloat(document.getElementById('cat-w').value || 10);
+                    const d = parseFloat(document.getElementById('cat-d').value || 10);
+
+                    if(!name || !weight || !time) return alert("Preencha Nome, Peso e Tempo.");
+
+                    try {
+                        await addDoc(collection(db, "catalog"), {
+                            name, mat, weight, time, labor, dim: {h,w,d}
+                        });
+                        
+                        ['cat-name', 'cat-weight', 'cat-time'].forEach(id => document.getElementById(id).value = '');
+                        alert("Item cadastrado na nuvem com sucesso!");
+                    } catch (e) {
+                        console.error(e);
+                        alert("Erro ao gravar no banco.");
+                    }
+                },
+
+                // Deleta do Firestore
+                async delete(id) {
+                    if(confirm("Apagar este modelo do banco de dados global?")) {
+                        try {
+                            await deleteDoc(doc(db, "catalog", id));
+                        } catch (e) { console.error(e); }
+                    }
+                }
+            },
+
+            Settings: {
+                load() {
+                    const s = Store.settings;
+                    document.getElementById('set-pla').value = s.pla;
+                    document.getElementById('set-petg').value = s.petg;
+                    document.getElementById('set-power').value = s.power;
+                    document.getElementById('set-dep').value = s.dep;
+                    document.getElementById('set-labor').value = s.labor;
+                    document.getElementById('set-fail').value = s.fail;
+                    document.getElementById('set-cep').value = s.cep;
+                    document.getElementById('set-box').value = s.box;
+                },
+                
+                // Grava as configurações no Firestore
+                async save() {
+                    const s = {
+                        pla: parseFloat(document.getElementById('set-pla').value),
+                        petg: parseFloat(document.getElementById('set-petg').value),
+                        power: parseFloat(document.getElementById('set-power').value),
+                        dep: parseFloat(document.getElementById('set-dep').value),
+                        labor: parseFloat(document.getElementById('set-labor').value),
+                        fail: parseFloat(document.getElementById('set-fail').value),
+                        cep: document.getElementById('set-cep').value,
+                        box: parseFloat(document.getElementById('set-box').value),
+                        watts: 280 // Mantido fixo ou pode ser editado no futuro
                     };
-                });
+
+                    try {
+                        await setDoc(doc(db, "system", "settings"), s);
+                        alert("Configurações atualizadas para todos os usuários.");
+                    } catch (e) {
+                        console.error(e);
+                        alert("Erro ao salvar parâmetros.");
+                    }
+                }
             }
-
-            // 3. Resgate de Configurações Antigas
-            if (legacyData.cfg) {
-                this.data.settings.pla = legacyData.cfg.pla || 110;
-                this.data.settings.petg = legacyData.cfg.petg || 100;
-                this.data.settings.power = legacyData.cfg.luz || 0.95;
-                this.data.settings.dep = legacyData.cfg.dep || 3.0;
-                this.data.settings.cep = legacyData.cfg.cepOrigem || "092109210";
-            }
-
-            this.data.isMigrated = true;
-            this.save();
-            console.log('✅ Migração ETL concluída com sucesso!');
         }
-    },
-    
-    save() { localStorage.setItem(DB_KEY, JSON.stringify(this.data)); }
-};
+    };
 
-// --- CORE APPLICATION LOGIC (Mantida da v8.0) ---
-const App = {
-    chartInstance: null,
-    init() { Store.init(); document.getElementById('dash-date').innerText = new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); this.populateMonthFilter(); },
-    setUser(name) { Store.currentUser = name; const btns = document.querySelectorAll('#user-switcher button'); btns[0].classList.toggle('active', name === 'Marcelo'); btns[1].classList.toggle('active', name === 'Fernanda'); },
-    login() { const pass = document.getElementById('auth-pass').value; const correctPass = Store.currentUser === 'Marcelo' ? Store.data.auth.marcelo : Store.data.auth.fernanda; if (pass === correctPass) { document.getElementById('login-view').style.display = 'none'; document.getElementById('app-layout').style.display = 'flex'; document.getElementById('user-display').innerText = Store.currentUser; this.Views.Settings.load(); this.Views.Catalog.render(); this.Views.Dashboard.render(); this.Views.Orders.render(); if(Store.data.isMigrated) { alert("Sincronização concluída: Seus dados antigos foram migrados para a v8 com sucesso."); Store.data.isMigrated = false; Store.save(); } } else { alert("Senha incorreta."); document.getElementById('auth-pass').value = ''; } },
-    logout() { location.reload(); },
-    navigate(viewId, el) { document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.getElementById('view-' + viewId).classList.add('active'); el.classList.add('active'); if(viewId === 'calc') this.Views.Calc.init(); if(viewId === 'orders') this.Views.Orders.render(); },
-    populateMonthFilter() { const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]; const sel = document.getElementById('dash-month-filter'); const currMonth = new Date().getMonth(); sel.innerHTML = months.map((m, i) => `<option value="${i}" ${i === currMonth ? 'selected' : ''}>${m}</option>`).join(''); },
+    // 5. Expondo a Aplicação para o HTML
+    // Como estamos usando Type="module", as funções precisam ser atreladas ao objeto Window
+    window.App = App;
 
-    Views: {
-        Dashboard: {
-            render() { const targetMonth = parseInt(document.getElementById('dash-month-filter').value); const completed = Store.data.orders.filter(o => o.status === 'done' && new Date(o.date).getMonth() === targetMonth); const revenue = completed.reduce((sum, o) => sum + o.price, 0); const profit = completed.reduce((sum, o) => sum + o.profit, 0); const margin = revenue > 0 ? (profit / revenue) * 100 : 0; document.getElementById('kpi-revenue').innerText = revenue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); document.getElementById('kpi-profit').innerText = profit.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); document.getElementById('kpi-margin').innerText = margin.toFixed(1) + '%'; this.renderChart(completed); },
-            renderChart(data) { const ctx = document.getElementById('revenueChart').getContext('2d'); if (App.chartInstance) App.chartInstance.destroy(); const daily = {}; data.forEach(o => { const day = new Date(o.date).getDate(); daily[day] = (daily[day] || 0) + o.price; }); const labels = Object.keys(daily).sort((a,b) => a-b); const values = labels.map(l => daily[l]); App.chartInstance = new Chart(ctx, { type: 'bar', data: { labels: labels.map(l => `Dia ${l}`), datasets: [{ label: 'Receita', data: values, backgroundColor: '#0a84ff', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#2c2c2e' }, ticks: { color: '#8e8e93' }, beginAtZero: true }, x: { grid: { display: false }, ticks: { color: '#8e8e93' } } } } }); }
-        },
-        Orders: {
-            render() { const container = document.getElementById('orders-list'); if (Store.data.orders.length === 0) { container.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 20px;">Nenhum pedido na fila.</p>`; return; } const sorted = [...Store.data.orders].sort((a, b) => { if(a.status === 'pending' && b.status === 'done') return -1; if(a.status === 'done' && b.status === 'pending') return 1; return b.date - a.date; }); container.innerHTML = sorted.map(o => ` <div class="list-item" style="flex-direction: column; align-items: flex-start; gap: 10px;"> <div style="display: flex; justify-content: space-between; width: 100%;"> <div> <h3 style="margin-bottom: 4px;">${o.itemName}</h3> <p class="caption">${o.channel.toUpperCase()} • ${new Date(o.date).toLocaleDateString('pt-BR')}</p> </div> <div style="text-align: right;"> <h3 style="color: var(--success);">${o.price.toLocaleString('pt-BR', {style: 'currency', currency:'BRL'})}</h3> <span class="badge ${o.status === 'pending' ? 'pendente' : 'concluido'}"> ${o.status === 'pending' ? 'NA FILA' : 'CONCLUÍDO'} </span> </div> </div> ${o.status === 'pending' ? `<button class="btn-secondary" style="width: 100%; margin-top: 10px; color: var(--success);" onclick="App.Views.Orders.markDone(${o.id})"><i class="fas fa-check" style="margin-right: 8px;"></i>Marcar como Concluído</button>` : `<button style="background:none; border:none; color: var(--danger); font-size: 13px; cursor: pointer; margin-top: 5px;" onclick="App.Views.Orders.delete(${o.id})">Excluir Registro</button>` } </div> `).join(''); },
-            add(item, price, profit, channel) { Store.data.orders.push({ id: Date.now(), itemName: item.name, price, profit, channel, status: 'pending', date: Date.now(), user: Store.currentUser }); Store.save(); alert("Pedido adicionado à fila!"); App.Views.Orders.render(); },
-            markDone(id) { const order = Store.data.orders.find(o => o.id === id); if(order) { order.status = 'done'; Store.save(); this.render(); App.Views.Dashboard.render(); } },
-            delete(id) { if(confirm("Remover este histórico permanentemente?")) { Store.data.orders = Store.data.orders.filter(o => o.id !== id); Store.save(); this.render(); App.Views.Dashboard.render(); } }
-        },
-        Calc: {
-            init() { const sel = document.getElementById('calc-model'); sel.innerHTML = '<option value="">-- Selecione --</option>' + Store.data.catalog.map(i => `<option value="${i.id}">${i.name}</option>`).join(''); document.getElementById('pricing-matrix').innerHTML = ''; document.getElementById('frete-result').style.display = 'none'; },
-            run() { const itemId = document.getElementById('calc-model').value; const channel = document.getElementById('calc-channel').value; if(!itemId) return; const item = Store.data.catalog.find(i => i.id == itemId); const s = Store.data.settings; const matCost = (item.weight / 1000) * s[item.mat]; const riskCost = matCost * (s.fail / 100); const powerCost = (s.watts / 1000) * item.time * s.power; const depCost = item.time * s.dep; const laborCost = item.labor * s.labor; const baseCost = matCost + riskCost + powerCost + depCost + laborCost + s.box; const margins = [30, 50, 80, 100, 150]; let html = ` <div style="background: var(--bg-elevated); padding: 15px; border-radius: var(--radius-sm); margin-bottom: 20px;"> <p class="caption">Custo Real de Fabricação</p> <h2 style="color: var(--danger); margin-top: 5px;">R$ ${baseCost.toFixed(2)}</h2> <p style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">(Material, energia, depreciação, perdas, caixa e ${item.labor}h labor)</p> </div> `; html += margins.map(m => { let price = baseCost * (1 + (m/100)); if(channel === 'elo7') price = (price + 1.5) / 0.88; if(channel === 'ml') price = (price + 5) / 0.84; if(channel === 'shopee') price = price / 0.80; const fees = (channel === 'pix' ? 0 : (channel === 'elo7' ? (price*0.12)+1.5 : (channel === 'ml' ? (price*0.16)+5 : price*0.20))); const profit = price - fees - baseCost; return ` <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--separator);"> <div> <span class="badge" style="background: var(--bg-elevated); color: var(--text-primary); margin-bottom: 5px; display: inline-block;">Meta: ${m}%</span> <h3>R$ ${price.toFixed(2)}</h3> <p style="font-size: 12px; color: var(--success);">Lucro: R$ ${profit.toFixed(2)}</p> </div> <button class="btn-primary" style="width: auto; padding: 10px 20px;" onclick='App.Views.Orders.add(${JSON.stringify(item)}, ${price}, ${profit}, "${channel}")'>Gerar Pedido</button> </div> `; }).join(''); document.getElementById('pricing-matrix').innerHTML = html; },
-            async fetchFrete() { const cep = document.getElementById('calc-cep').value.replace(/\D/g, ''); const resEl = document.getElementById('frete-result'); const itemId = document.getElementById('calc-model').value; if(cep.length !== 8) return alert("CEP Inválido"); if(!itemId) return alert("Selecione o produto."); const item = Store.data.catalog.find(i => i.id == itemId); resEl.style.display = 'block'; resEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Consultando...'; try { const req = await fetch(`https://viacep.com.br/ws/${cep}/json/`); const data = await req.json(); if(data.erro) throw new Error(); const ufOrigem = Store.data.settings.cep.substring(0,2); const ufDestino = cep.substring(0,2); let base = ufOrigem === ufDestino ? 18.90 : 36.50; const cubagem = (item.dim.h * item.dim.w * item.dim.d) / 6000; if(cubagem > 1) base += (cubagem * 5); resEl.innerHTML = ` <b>Destino:</b> ${data.localidade} - ${data.uf}<br> <b>Volume:</b> ${cubagem.toFixed(2)} kg<br> <span style="color: var(--accent); font-weight: 600;">PAC Estimado: R$ ${base.toFixed(2)}</span> `; } catch(e) { resEl.innerHTML = '<span style="color: var(--danger);">Falha API.</span>'; } }
-        },
-        Catalog: {
-            render() { const container = document.getElementById('catalog-list'); container.innerHTML = Store.data.catalog.map(i => ` <div class="list-item"> <div> <h3 style="margin-bottom: 4px;">${i.name}</h3> <p class="caption">${i.mat.toUpperCase()} • ${i.weight}g • ${i.time}h print</p> </div> <button style="background:none; border:none; color: var(--danger); cursor: pointer; padding: 10px;" onclick="App.Views.Catalog.delete(${i.id})"><i class="fas fa-trash"></i></button> </div> `).join(''); },
-            save() { const id = Date.now(); const name = document.getElementById('cat-name').value; const mat = document.getElementById('cat-mat').value; const weight = parseFloat(document.getElementById('cat-weight').value); const time = parseFloat(document.getElementById('cat-time').value); const labor = parseFloat(document.getElementById('cat-labor').value); const h = parseFloat(document.getElementById('cat-h').value || 10); const w = parseFloat(document.getElementById('cat-w').value || 10); const d = parseFloat(document.getElementById('cat-d').value || 10); if(!name || !weight || !time) return alert("Preencha Nome, Peso e Tempo."); Store.data.catalog.push({ id, name, mat, weight, time, labor, dim: {h,w,d} }); Store.save(); this.render(); ['cat-name', 'cat-weight', 'cat-time'].forEach(id => document.getElementById(id).value = ''); },
-            delete(id) { Store.data.catalog = Store.data.catalog.filter(i => i.id !== id); Store.save(); this.render(); }
-        },
-        Settings: {
-            load() { const s = Store.data.settings; document.getElementById('set-pla').value = s.pla; document.getElementById('set-petg').value = s.petg; document.getElementById('set-power').value = s.power; document.getElementById('set-dep').value = s.dep; document.getElementById('set-labor').value = s.labor; document.getElementById('set-fail').value = s.fail; document.getElementById('set-cep').value = s.cep; document.getElementById('set-box').value = s.box; },
-            save() { const s = Store.data.settings; s.pla = parseFloat(document.getElementById('set-pla').value); s.petg = parseFloat(document.getElementById('set-petg').value); s.power = parseFloat(document.getElementById('set-power').value); s.dep = parseFloat(document.getElementById('set-dep').value); s.labor = parseFloat(document.getElementById('set-labor').value); s.fail = parseFloat(document.getElementById('set-fail').value); s.cep = document.getElementById('set-cep').value; s.box = parseFloat(document.getElementById('set-box').value); Store.save(); alert("Parâmetros atualizados!"); }
-        }
-    }
-};
-
-window.onload = () => App.init();
+    // Inicialização da Tela
+    window.onload = () => App.init();
 </script>
 </body>
 </html>
