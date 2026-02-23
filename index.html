@@ -3,319 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InovaFam3D Pro - Gestão Estratégica</title>
+    <title>InovaFam3D - Gestão de Operações</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; padding: 20px; color: #e2e2e2; }
-        .container { max-width: 1100px; margin: 0 auto; }
-        .logo-container { text-align: center; margin-bottom: 15px; }
-        .logo-img { max-width: 160px; height: auto; border-radius: 12px; background: white; padding: 8px; }
-        
-        .nav { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-        .nav-btn { padding: 10px 18px; border: none; border-radius: 20px; background: #0f3460; color: white; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .nav-btn.active { background: #4ecca3; color: #1a1a2e; }
+        :root {
+            --brand: #4ecca3;
+            --dark-bg: #0b0e14;
+            --card-bg: #1a1e26;
+            --text-main: #f0f2f5;
+            --text-dim: #a0a0a0;
+            --danger: #ff4d4d;
+            --success: #00e676;
+        }
 
-        .card { background: #16213e; border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+        body { background-color: var(--dark-bg); color: var(--text-main); padding: 15px; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        /* Login */
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90vh; }
+        .login-card { background: var(--card-bg); padding: 40px; border-radius: 24px; width: 100%; max-width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .login-card input { width: 100%; padding: 15px; margin: 20px 0; border-radius: 12px; border: none; background: #252a33; color: white; text-align: center; font-size: 1.1em; }
+
+        /* Dashboard KPI */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .kpi-card { background: var(--card-bg); padding: 20px; border-radius: 20px; border-top: 4px solid var(--brand); text-align: center; }
+        .kpi-card span { font-size: 0.7em; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+        .kpi-card h2 { font-size: 1.5em; margin-top: 5px; color: var(--brand); }
+
+        /* Navigation */
+        .nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 25px; }
+        .nav-btn { padding: 15px 5px; border: none; border-radius: 16px; background: var(--card-bg); color: var(--text-dim); cursor: pointer; font-weight: 600; font-size: 0.8em; transition: 0.3s; }
+        .nav-btn.active { background: var(--brand); color: #000; }
+
+        /* Content Cards */
+        .card { background: var(--card-bg); border-radius: 24px; padding: 25px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        h3 { margin-bottom: 15px; color: #4ecca3; border-bottom: 1px solid #0f3460; padding-bottom: 5px; }
         
-        .input-group { margin-bottom: 12px; }
-        label { display: block; font-weight: 600; margin-bottom: 5px; color: #4ecca3; font-size: 0.85em; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #0f3460; border-radius: 8px; background: #1a1a2e; color: white; font-size: 15px; outline: none; }
-        
-        .btn { width: 100%; background: #4ecca3; color: #1a1a2e; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 5px; }
-        .btn:hover { background: #45b393; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.75em; color: var(--brand); margin-bottom: 6px; font-weight: bold; }
+        input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #2a3240; background: #0b1018; color: white; font-size: 1em; }
 
-        /* Tabela de Preços */
-        .price-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(255,255,255,0.02); border-radius: 10px; overflow: hidden; }
-        .price-table th, .price-table td { padding: 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .price-table th { background: #0f3460; color: #4ecca3; font-size: 0.9em; }
-        .price-table tr:hover { background: rgba(78, 204, 163, 0.1); }
-        .btn-sel { background: #4ecca3; color: #1a1a2e; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8em; font-weight: bold; }
+        /* Price Matrix Table */
+        .matrix-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; margin-top: 10px; }
+        .matrix-table th { color: var(--text-dim); font-size: 0.7em; text-transform: uppercase; padding: 10px; }
+        .matrix-table td { background: #252a33; padding: 15px; text-align: center; }
+        .matrix-table td:first-child { border-radius: 15px 0 0 15px; font-weight: bold; }
+        .matrix-table td:last-child { border-radius: 0 15px 15px 0; }
+        .btn-action { background: var(--brand); color: #000; border: none; padding: 8px 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
 
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; }
-        .login-card { background: white; padding: 35px; border-radius: 20px; width: 100%; max-width: 380px; color: #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .hidden { display: none !important; }
+        .btn-main { background: var(--brand); color: #000; border: none; padding: 18px; border-radius: 16px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1.1em; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
-    <div class="logo-container"><img src="logo.png.jfif" class="logo-img" onerror="this.style.display='none'"></div>
     <div class="login-card">
-        <h2 style="text-align:center; margin-bottom:20px;">InovaFam3D 🔐</h2>
-        <input type="password" id="pass-input" placeholder="Senha da Empresa" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:10px;">
-        <button class="btn" onclick="checkLogin()">ACESSAR SISTEMA</button>
+        <h1 style="color:var(--brand); margin-bottom:10px;">InovaFam3D</h1>
+        <p style="color:var(--text-dim); font-size:0.8em;">ACESSO RESTRITO</p>
+        <input type="password" id="pass-input" placeholder="Senha da Empresa">
+        <button class="btn-main" onclick="checkLogin()">ENTRAR NO SISTEMA</button>
     </div>
 </div>
 
 <div id="main-content" class="container hidden">
-    <div class="header" style="text-align:center; margin-bottom:20px;">
-        <h1 style="color:#4ecca3">InovaFam3D</h1>
-        <p style="font-size: 0.8em; color: #888;">Gestão Estratégica de Precificação</p>
+    <div class="kpi-grid">
+        <div class="kpi-card"><span>Vendas (Mês)</span><h2 id="kpi-vol">0</h2></div>
+        <div class="kpi-card"><span>Faturamento</span><h2 id="kpi-fat">R$ 0</h2></div>
+        <div class="kpi-card"><span>Lucro Real</span><h2 id="kpi-luc" style="color:var(--success)">R$ 0</h2></div>
+        <div class="kpi-card"><span>Invest. ADS</span><h2 id="kpi-ads" style="color:var(--danger)">R$ 0</h2></div>
     </div>
 
-    <div class="nav">
-        <button class="nav-btn active" onclick="showTab('calc')">Calculadora</button>
-        <button class="nav-btn" onclick="showTab('produtos')">Produtos</button>
-        <button class="nav-btn" onclick="showTab('config')">Configurações</button>
-        <button class="nav-btn" onclick="showTab('history')">Histórico</button>
-    </div>
+    <nav class="nav">
+        <button class="nav-btn active" onclick="showTab('calc')">CALCULAR</button>
+        <button class="nav-btn" onclick="showTab('catalog')">CATÁLOGO</button>
+        <button class="nav-btn" onclick="showTab('costs')">CUSTOS</button>
+        <button class="nav-btn" onclick="showTab('dash')">DASHBOARD</button>
+    </nav>
 
-    <div id="calc" class="card">
-        <h3>🧮 Calculadora de Margens</h3>
-        <div class="grid">
-            <div class="input-group">
-                <label>Selecionar Produto:</label>
-                <select id="sel_prod" onchange="calcularTabela()"></select>
+    <div id="calc" class="tab-content">
+        <div class="card">
+            <h3>🧮 Novo Orçamento</h3>
+            <div class="grid" style="margin-top:15px;">
+                <div class="input-group">
+                    <label>Origem do Item</label>
+                    <select id="calc_mode" onchange="toggleCalcMode()">
+                        <option value="cat">Item do Catálogo</option>
+                        <option value="avulso">Item Avulso (Novo)</option>
+                    </select>
+                </div>
+                <div id="cat-select-box" class="input-group">
+                    <label>Selecionar Produto</label>
+                    <select id="sel_prod" onchange="calculateMatrix()"></select>
+                </div>
+                <div id="avulso-box" class="hidden grid" style="grid-column: span 1; gap:10px;">
+                    <div class="input-group"><label>Material</label><select id="av_tipo" onchange="calculateMatrix()"><option value="pla">PLA</option><option value="petg">PETG</option></select></div>
+                    <div class="input-group"><label>Peso (g)</label><input type="number" id="av_peso" oninput="calculateMatrix()"></div>
+                    <div class="input-group"><label>Tempo (h)</label><input type="number" id="av_tempo" step="0.1" oninput="calculateMatrix()"></div>
+                </div>
             </div>
-            <div class="input-group">
-                <label>Plataforma de Venda:</label>
-                <select id="sel_plat" onchange="calcularTabela()">
-                    <option value="pix">PIX / Direta (0%)</option>
-                    <option value="elo7">Elo7 (12% + 1,50)</option>
-                    <option value="ml">Mercado Livre (16% + 5,00)</option>
-                    <option value="shopee">Shopee (20%)</option>
-                </select>
-            </div>
-        </div>
-
-        <div id="res_tabela_container" class="hidden">
-            <table class="price-table">
-                <thead>
-                    <tr>
-                        <th>Margem</th>
-                        <th>Preço Sugerido</th>
-                        <th>Lucro Líquido</th>
-                        <th>Ação</th>
-                    </tr>
-                </thead>
-                <tbody id="tabela_corpo"></tbody>
-            </table>
-            <p style="margin-top: 15px; font-size: 0.8em; color: #888; text-align: center;">* O custo base já inclui filamento, energia, embalagem e falhas.</p>
-        </div>
-    </div>
-
-    <div id="produtos" class="card hidden">
-        <h3>📦 Cadastro de Produtos</h3>
-        <div class="grid">
-            <div class="input-group"><label>Nome:</label><input type="text" id="p_nome"></div>
-            <div class="input-group">
-                <label>Filamento:</label>
-                <select id="p_tipo">
-                    <option value="pla">PLA</option>
-                    <option value="petg">PETG</option>
-                    <option value="abs">ABS</option>
-                    <option value="tpu">TPU</option>
-                    <option value="asa">ASA</option>
-                </select>
-            </div>
-            <div class="input-group"><label>Peso Total (g):</label><input type="number" id="p_peso"></div>
-            <div class="input-group"><label>Tempo (h):</label><input type="number" id="p_tempo" step="0.1"></div>
-        </div>
-        <button class="btn" onclick="addProduto()">SALVAR PRODUTO</button>
-        <div id="lista_p" style="margin-top:20px"></div>
-    </div>
-
-    <div id="config" class="card hidden">
-        <div class="grid">
-            <div>
-                <h3>💰 Filamento (R$/kg)</h3>
-                <div class="input-group"><label>PLA:</label><input type="number" id="c_pla"></div>
-                <div class="input-group"><label>PETG:</label><input type="number" id="c_petg"></div>
-                <div class="input-group"><label>ABS:</label><input type="number" id="c_abs"></div>
-                <div class="input-group"><label>TPU:</label><input type="number" id="c_tpu"></div>
-                <div class="input-group"><label>ASA:</label><input type="number" id="c_asa"></div>
-            </div>
-            <div>
-                <h3>⚡ Custos Operacionais</h3>
-                <div class="input-group"><label>Energia (R$/kWh):</label><input type="number" id="c_luz" step="0.01"></div>
-                <div class="input-group"><label>Consumo Impressora (W):</label><input type="number" id="c_watts"></div>
-                <div class="input-group"><label>Embalagem (R$):</label><input type="number" id="c_emb"></div>
-                <div class="input-group"><label>Taxa de Falha (%):</label><input type="number" id="c_falha"></div>
+            <div class="grid">
+                <div class="input-group"><label>Plataforma de Venda</label><select id="sel_plat" onchange="calculateMatrix()"><option value="pix">PIX / Direta</option><option value="elo7">Elo7</option><option value="ml">Mercado Livre</option><option value="shopee">Shopee</option></select></div>
+                <div class="input-group"><label>Canal ADS</label><select id="sel_ads" onchange="calculateMatrix()"><option value="nenhum">Sem ADS</option><option value="google">Google Shopping</option><option value="social">Meta (Insta/FB)</option><option value="shopee">Shopee ADS</option></select></div>
             </div>
         </div>
-        <button class="btn" onclick="saveConfigs()">ATUALIZAR CONFIGURAÇÕES</button>
+
+        <div id="matrix-container" class="hidden">
+            <h3 style="margin-bottom:10px; color:var(--brand);">Matriz de Precificação Estratégica</h3>
+            <div style="overflow-x:auto;">
+                <table class="matrix-table">
+                    <thead><tr><th>Margem</th><th>Preço Venda</th><th>Lucro R$</th><th>Ação</th></tr></thead>
+                    <tbody id="matrix-body"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <div id="history" class="card hidden">
-        <h3>📋 Histórico de Vendas</h3>
-        <div id="lista_vendas"></div>
+    <div id="catalog" class="tab-content hidden">
+        <div class="card">
+            <h3>📦 Cadastrar Novo Modelo</h3>
+            <div class="grid" style="margin-top:15px;">
+                <div class="input-group"><label>Nome do Produto</label><input type="text" id="p_nome"></div>
+                <div class="input-group"><label>Material</label><select id="p_tipo"><option value="pla">PLA</option><option value="petg">PETG</option></select></div>
+                <div class="input-group"><label>Peso Produção (g)</label><input type="number" id="p_peso"></div>
+                <div class="input-group"><label>Tempo Estimado (h)</label><input type="number" id="p_tempo"></div>
+            </div>
+            <button class="btn-main" onclick="saveToCatalog()">ADICIONAR AO SISTEMA</button>
+        </div>
+        <div id="catalog-list"></div>
+    </div>
+
+    <div id="costs" class="tab-content hidden">
+        <div class="card">
+            <h3>⚙️ Configurações Financeiras (QA Revisado)</h3>
+            <div class="grid">
+                <div>
+                    <label>Preço Filamento (kg)</label>
+                    <div class="input-group"><label>PLA (R$)</label><input type="number" id="c_pla" value="110"></div>
+                    <div class="input-group"><label>PETG (R$)</label><input type="number" id="c_petg" value="100"></div>
+                </div>
+                <div>
+                    <label>Energia e Manutenção</label>
+                    <div class="input-group"><label>Energia (kWh)</label><input type="number" id="c_luz" value="0.95"></div>
+                    <div class="input-group"><label>Depreciação/Manut. (R$/h)</label><input type="number" id="c_dep" value="2.50"></div>
+                    <div class="input-group"><label>Watts Máquina</label><input type="number" id="c_watts" value="280"></div>
+                </div>
+                <div>
+                    <label>Marketing ADS (Fixo por Venda)</label>
+                    <div class="input-group"><label>Google</label><input type="number" id="ads_google" value="4.50"></div>
+                    <div class="input-group"><label>Meta (Insta/FB)</label><input type="number" id="ads_social" value="3.50"></div>
+                </div>
+            </div>
+            <button class="btn-main" onclick="saveCosts()">ATUALIZAR TABELA DE CUSTOS</button>
+        </div>
+    </div>
+
+    <div id="dash" class="tab-content hidden">
+        <div class="card">
+            <canvas id="chartFin" height="150"></canvas>
+        </div>
     </div>
 </div>
 
 <script>
     const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbycyHpnL4YYf_kyuvdne82MqWPFt_LL19bS40H6ba3yvs6nhVWBmL1mBZ_e_qOGJWcV/exec";
     
-    let config = JSON.parse(localStorage.getItem('inova_cfg')) || {
-        pla:95, petg:90, abs:80, tpu:150, asa:120,
-        luz:0.95, watts:250, emb:3.5, falha:5, pass:"15@0117Inova"
+    let state = JSON.parse(localStorage.getItem('inovafam_v3')) || {
+        cfg: { pla:110, petg:100, luz:0.95, dep:2.5, watts:280, ads_google:4.5, ads_social:3.5, ads_shopee:1.5, emb:4.0, pass:"15@0117Inova" },
+        catalog: [],
+        history: []
     };
 
-    let produtos = JSON.parse(localStorage.getItem('inova_prods')) || [];
-    let vendas = JSON.parse(localStorage.getItem('inova_vendas')) || [];
+    let mainChart = null;
 
     function checkLogin() {
-        if(document.getElementById('pass-input').value === config.pass) {
+        if(document.getElementById('pass-input').value === state.cfg.pass) {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-content').classList.remove('hidden');
-            init();
-        } else { alert("Senha incorreta!"); }
+            refreshUI();
+        } else { alert("Senha Incorreta"); }
     }
 
-    function init() {
-        renderProdsDropdown();
-        renderProdsLista();
-        loadConfigInputs();
+    function toggleCalcMode() {
+        const m = document.getElementById('calc_mode').value;
+        document.getElementById('cat-select-box').classList.toggle('hidden', m !== 'cat');
+        document.getElementById('avulso-box').classList.toggle('hidden', m !== 'avulso');
     }
 
-    function saveConfigs() {
-        config.pla = parseFloat(document.getElementById('c_pla').value);
-        config.petg = parseFloat(document.getElementById('c_petg').value);
-        config.abs = parseFloat(document.getElementById('c_abs').value);
-        config.tpu = parseFloat(document.getElementById('c_tpu').value);
-        config.asa = parseFloat(document.getElementById('c_asa').value);
-        config.luz = parseFloat(document.getElementById('c_luz').value);
-        config.watts = parseFloat(document.getElementById('c_watts').value);
-        config.emb = parseFloat(document.getElementById('c_emb').value);
-        config.falha = parseFloat(document.getElementById('c_falha').value);
-        localStorage.setItem('inova_cfg', JSON.stringify(config));
-        alert("Configurações Salvas!");
-        calcularTabela();
-    }
+    function calculateMatrix() {
+        const mode = document.getElementById('calc_mode').value;
+        let item = {};
 
-    function loadConfigInputs() {
-        document.getElementById('c_pla').value = config.pla;
-        document.getElementById('c_petg').value = config.petg;
-        document.getElementById('c_abs').value = config.abs;
-        document.getElementById('c_tpu').value = config.tpu;
-        document.getElementById('c_asa').value = config.asa;
-        document.getElementById('c_luz').value = config.luz;
-        document.getElementById('c_watts').value = config.watts;
-        document.getElementById('c_emb').value = config.emb;
-        document.getElementById('c_falha').value = config.falha;
-    }
+        if(mode === 'cat') {
+            const id = document.getElementById('sel_prod').value;
+            if(!id) return;
+            item = state.catalog.find(i => i.id == id);
+        } else {
+            item = {
+                nome: "Venda Avulsa",
+                tipo: document.getElementById('av_tipo').value,
+                peso: parseFloat(document.getElementById('av_peso').value) || 0,
+                tempo: parseFloat(document.getElementById('av_tempo').value) || 0
+            };
+        }
 
-    // CÁLCULO DA TABELA DE PREÇOS
-    function calcularTabela() {
-        const pId = document.getElementById('sel_prod').value;
-        if(!pId) return;
-        const p = produtos.find(prod => prod.id == pId);
+        if(!item.peso || !item.tempo) return;
+
         const plat = document.getElementById('sel_plat').value;
+        const ads = document.getElementById('sel_ads').value;
+
+        // CUSTO TÉCNICO
+        const cMaterial = (item.peso / 1000) * state.cfg[item.tipo];
+        const cEnergia = (state.cfg.watts / 1000) * item.tempo * state.cfg.luz;
+        const cManut = item.tempo * state.cfg.dep;
+        const cAds = ads === 'nenhum' ? 0 : state.cfg['ads_' + ads];
         
-        // 1. Custo do Filamento
-        const custoFil = (p.peso / 1000) * config[p.tipo];
-        // 2. Custo de Energia (Watts -> kWh)
-        const custoLuz = (config.watts / 1000) * p.tempo * config.luz;
-        // 3. Custo Base (Filamento + Luz + Embalagem + Falha)
-        const custoTotalBase = (custoFil + custoLuz + config.emb) * (1 + (config.falha/100));
+        const custoProducao = cMaterial + cEnergia + cManut + state.cfg.emb + cAds;
 
         const margens = [20, 50, 70, 100, 150, 200];
-        const corpo = document.getElementById('tabela_corpo');
-        corpo.innerHTML = "";
-        document.getElementById('res_tabela_container').classList.remove('hidden');
+        const body = document.getElementById('matrix-body');
+        body.innerHTML = "";
+        document.getElementById('matrix-container').classList.remove('hidden');
 
         margens.forEach(m => {
-            let precoComMargem = custoTotalBase * (1 + (m / 100));
-            
-            // Aplicar Taxas de Plataforma
+            let precoComLucro = custoProducao * (1 + (m / 100));
             let precoFinal = 0;
             let taxaPlat = 0;
-            if(plat === 'pix') { precoFinal = precoComMargem; }
-            else if(plat === 'elo7') { precoFinal = (precoComMargem + 1.5) / 0.88; taxaPlat = (precoFinal * 0.12) + 1.5; }
-            else if(plat === 'ml') { precoFinal = (precoComMargem + 5) / 0.84; taxaPlat = (precoFinal * 0.16) + 5; }
-            else if(plat === 'shopee') { precoFinal = precoComMargem / 0.80; taxaPlat = precoFinal * 0.20; }
 
-            const lucroLiq = precoFinal - custoTotalBase - taxaPlat;
+            if(plat === 'pix') precoFinal = precoComLucro;
+            else if(plat === 'elo7') { precoFinal = (precoComLucro + 1.5) / 0.88; taxaPlat = (precoFinal * 0.12) + 1.5; }
+            else if(plat === 'ml') { precoFinal = (precoComLucro + 5) / 0.84; taxaPlat = (precoFinal * 0.16) + 5; }
+            else if(plat === 'shopee') { precoFinal = precoComLucro / 0.80; taxaPlat = precoFinal * 0.20; }
 
-            corpo.innerHTML += `
-                <tr>
-                    <td>${m}%</td>
-                    <td><b>R$ ${precoFinal.toFixed(2)}</b></td>
-                    <td style="color: #4ecca3">R$ ${lucroLiq.toFixed(2)}</td>
-                    <td><button class="btn-sel" onclick="registrarVenda('${p.nome}', ${precoFinal.toFixed(2)}, ${lucroLiq.toFixed(2)}, '${plat}', ${m})">VENDER</button></td>
-                </tr>
-            `;
+            const lucroLiq = precoFinal - custoProducao - taxaPlat;
+
+            body.innerHTML += `<tr>
+                <td>${m}%</td>
+                <td>R$ ${precoFinal.toFixed(2)}</td>
+                <td style="color:var(--success)">R$ ${lucroLiq.toFixed(2)}</td>
+                <td><button class="btn-action" onclick="confirmSale('${item.nome}', ${precoFinal.toFixed(2)}, ${lucroLiq.toFixed(2)}, '${plat}', ${m}, ${cAds})">VENDER</button></td>
+            </tr>`;
         });
     }
 
-    function registrarVenda(nome, preco, lucro, plat, margem) {
-        const venda = {
-            data: new Date().toLocaleDateString(),
-            nome: nome,
-            preco: preco,
-            lucro: lucro,
-            plataforma: plat,
-            margem: margem + "%"
-        };
-        vendas.unshift(venda);
-        localStorage.setItem('inova_vendas', JSON.stringify(vendas));
-        
-        // Envio para Planilha
+    function confirmSale(nome, preco, lucro, plat, margem, ads) {
+        const venda = { data: new Date().toLocaleDateString(), nome, preco, lucro, plat, margem: margem+"%", ads, mes: new Date().getMonth() };
+        state.history.unshift(venda);
+        saveState();
         fetch(GOOGLE_URL, {method:'POST', mode:'no-cors', body:JSON.stringify(venda)});
-        
-        alert("Venda registrada na Planilha!");
-        showTab('history');
+        alert("Venda Sincronizada com Sucesso!");
+        refreshUI();
+        showTab('dash');
     }
 
-    // GESTÃO DE PRODUTOS
-    function addProduto() {
-        const p = {
+    function saveToCatalog() {
+        const item = {
             id: Date.now(),
             nome: document.getElementById('p_nome').value,
             tipo: document.getElementById('p_tipo').value,
             peso: parseFloat(document.getElementById('p_peso').value) || 0,
             tempo: parseFloat(document.getElementById('p_tempo').value) || 0
         };
-        if(!p.nome) return alert("Preencha o nome!");
-        produtos.push(p);
-        localStorage.setItem('inova_prods', JSON.stringify(produtos));
-        init();
-        alert("Produto Salvo!");
+        if(!item.nome) return;
+        state.catalog.push(item);
+        saveState();
+        refreshUI();
+        alert("Adicionado ao catálogo!");
     }
 
-    function renderProdsDropdown() {
+    function refreshUI() {
+        // Update Dropdown
         const sel = document.getElementById('sel_prod');
-        sel.innerHTML = '<option value="">-- Escolha um produto --</option>' + 
-            produtos.map(p => `<option value="${p.id}">${p.nome} (${p.tipo.toUpperCase()})</option>`).join('');
+        sel.innerHTML = '<option value="">-- Escolha --</option>' + state.catalog.map(i => `<option value="${i.id}">${i.nome}</option>`).join('');
+        
+        // Update Catalog List
+        document.getElementById('catalog-list').innerHTML = state.catalog.map(i => `
+            <div class="card" style="display:flex; justify-content:space-between; padding:15px; margin-bottom:10px;">
+                <span><b>${i.nome}</b> (${i.tipo.toUpperCase()})</span>
+                <button onclick="deleteCat(${i.id})" style="color:var(--danger); border:none; background:none; cursor:pointer;">Remover</button>
+            </div>`).join('');
+
+        // Update KPIs
+        const mes = new Date().getMonth();
+        const vendasMes = state.history.filter(v => v.mes === mes);
+        const fat = vendasMes.reduce((a,b) => a + b.preco, 0);
+        const luc = vendasMes.reduce((a,b) => a + b.lucro, 0);
+        const ads = vendasMes.reduce((a,b) => a + b.ads, 0);
+
+        document.getElementById('kpi-vol').innerText = vendasMes.length;
+        document.getElementById('kpi-fat').innerText = "R$ " + fat.toFixed(2);
+        document.getElementById('kpi-luc').innerText = "R$ " + luc.toFixed(2);
+        document.getElementById('kpi-ads').innerText = "R$ " + ads.toFixed(2);
+
+        renderChart(fat, luc, ads);
     }
 
-    function renderProdsLista() {
-        document.getElementById('lista_p').innerHTML = produtos.map(p => `
-            <div class="history-item" style="display:flex; justify-content:space-between; padding:10px; background:rgba(255,255,255,0.05); margin-bottom:5px; border-radius:10px;">
-                <span>${p.nome} (${p.tipo.toUpperCase()})</span>
-                <button onclick="removerProd(${p.id})" style="background:#e94560; border:none; color:white; padding:5px 10px; border-radius:5px; cursor:pointer;">Remover</button>
-            </div>
-        `).join('');
+    function saveCosts() {
+        state.cfg.pla = parseFloat(document.getElementById('c_pla').value);
+        state.cfg.dep = parseFloat(document.getElementById('c_dep').value);
+        state.cfg.emb = 4.0; // Padrão
+        saveState();
+        alert("Custos Atualizados!");
     }
 
-    function removerProd(id) {
-        produtos = produtos.filter(p => p.id !== id);
-        localStorage.setItem('inova_prods', JSON.stringify(produtos));
-        init();
+    function renderChart(f, l, a) {
+        const ctx = document.getElementById('chartFin').getContext('2d');
+        if(mainChart) mainChart.destroy();
+        mainChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Lucro', 'Marketing', 'Custos Operacionais'],
+                datasets: [{
+                    data: [l, a, (f - l - a)],
+                    backgroundColor: ['#00e676', '#ff4d4d', '#4facfe'],
+                    borderWidth: 0
+                }]
+            },
+            options: { plugins: { legend: { position: 'bottom', labels: { color: '#fff' } } } }
+        });
     }
 
-    function renderHistory() {
-        document.getElementById('lista_vendas').innerHTML = vendas.map(v => `
-            <div class="history-item" style="padding:15px; border-radius:10px; background:rgba(255,255,255,0.03); margin-bottom:10px; border:1px solid rgba(255,255,255,0.05);">
-                <div style="display:flex; justify-content:space-between;">
-                    <b>${v.nome}</b>
-                    <span style="color:#4ecca3">R$ ${v.preco}</span>
-                </div>
-                <small>${v.data} | Margem: ${v.margem} | Plat: ${v.plataforma.toUpperCase()}</small>
-            </div>
-        `).join('');
-    }
-
-    function showTab(tab) {
-        document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
+    function showTab(t) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tab).classList.remove('hidden');
+        document.getElementById(t).classList.remove('hidden');
         event.target.classList.add('active');
-        if(tab === 'history') renderHistory();
     }
 
-    function logout() { location.reload(); }
+    function saveState() { localStorage.setItem('inovafam_v3', JSON.stringify(state)); }
+    function deleteCat(id) { state.catalog = state.catalog.filter(i => i.id !== id); saveState(); refreshUI(); }
 </script>
 
 </body>
