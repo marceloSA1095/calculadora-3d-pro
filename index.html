@@ -3,163 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InovaFam3D - ERP Zero Cost</title>
+    <title>InovaFam3D - ERP Resgate v6.1</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg: #0d1117; --card: #161b22; --border: #30363d;
-            --primary: #58a6ff; --success: #238636; --danger: #da3633;
-            --text: #c9d1d9; --accent: #1f6feb; --gold: #f2cc60;
+            --primary: #58a6ff; --success: #3fb950; --danger: #f85149;
+            --text: #c9d1d9; --gold: #d299ff;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding-bottom: 30px; }
-        .container { max-width: 1300px; margin: 0 auto; padding: 15px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 15px; }
 
-        /* Login UX */
+        /* Login Crisis Mode */
         #login-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 10000; }
-        .login-card { background: var(--card); padding: 40px; border-radius: 24px; border: 1px solid var(--border); width: 380px; text-align: center; }
-        .user-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
-        .user-btn { background: #21262d; border: 1px solid var(--border); color: white; padding: 15px; border-radius: 12px; cursor: pointer; transition: 0.3s; }
-        .user-btn:hover { border-color: var(--primary); background: #30363d; }
+        .login-card { background: var(--card); padding: 40px; border-radius: 20px; border: 1px solid var(--border); width: 380px; text-align: center; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        .user-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+        .user-btn { background: #21262d; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 10px; cursor: pointer; transition: 0.2s; font-size: 0.8em; }
         .user-btn.active { border-color: var(--primary); background: rgba(88,166,255,0.1); }
-
-        /* KPI Dashboard */
-        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        
+        /* Dashboard */
+        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .kpi-card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); border-left: 4px solid var(--primary); }
-        .kpi-card span { font-size: 0.7em; color: #8b949e; text-transform: uppercase; font-weight: 800; }
-        .kpi-card h2 { font-size: 1.6em; margin-top: 5px; }
+        .kpi-card span { font-size: 0.7em; color: #8b949e; text-transform: uppercase; font-weight: bold; }
+        .kpi-card h2 { margin-top: 5px; font-size: 1.5em; }
 
-        /* Navigation */
-        .nav { display: flex; gap: 8px; margin-bottom: 25px; background: var(--card); padding: 8px; border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; }
-        .nav-btn { padding: 12px 20px; border: none; background: transparent; color: #8b949e; cursor: pointer; border-radius: 8px; font-weight: 600; white-space: nowrap; transition: 0.3s; }
-        .nav-btn.active { background: var(--primary); color: white; }
+        /* Nav */
+        .nav { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .nav-btn { padding: 10px 18px; border: 1px solid var(--border); background: var(--card); color: #8b949e; cursor: pointer; border-radius: 8px; font-weight: 600; white-space: nowrap; }
+        .nav-btn.active { background: var(--primary); color: #0d1117; border-color: var(--primary); }
 
         .card { background: var(--card); border-radius: 16px; padding: 20px; border: 1px solid var(--border); margin-bottom: 20px; }
-        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .input-group { margin-bottom: 12px; }
+        label { display: block; font-size: 0.75em; color: var(--primary); margin-bottom: 4px; font-weight: bold; }
+        input, select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: #0d1117; color: white; outline: none; }
         
-        .input-group { margin-bottom: 15px; }
-        label { display: block; font-size: 0.75em; color: var(--primary); margin-bottom: 6px; font-weight: 700; text-transform: uppercase; }
-        input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: #0d1117; color: white; outline: none; }
+        .btn-main { background: var(--primary); color: #0d1117; border: none; padding: 14px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
+        .btn-main:hover { filter: brightness(1.2); }
         
-        /* Matriz de Preços */
-        .matrix-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .matrix-table th { text-align: left; padding: 10px; color: #8b949e; font-size: 0.7em; }
-        .matrix-table td { padding: 12px; border-bottom: 1px solid #21262d; font-size: 0.9em; }
-        .btn-sell { background: var(--success); color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; padding: 10px; color: #8b949e; font-size: 0.7em; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid #21262d; font-size: 0.9em; }
 
         .hidden { display: none !important; }
-        .btn-main { background: var(--primary); color: #000; border: none; padding: 16px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
-        .btn-outline { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8em; }
+        #debug-console { position: fixed; bottom: 0; left: 0; right: 0; background: var(--danger); color: white; padding: 5px; font-size: 10px; text-align: center; display: none; }
     </style>
 </head>
 <body>
 
+<div id="debug-console">ERRO DETECTADO. VERIFIQUE O CONSOLE.</div>
+
 <div id="login-screen">
     <div class="login-card">
-        <h1 style="color: var(--primary);">InovaFam3D</h1>
-        <p style="font-size: 0.8em; opacity: 0.6;">SISTEMA DE GESTÃO PROFISSIONAL</p>
+        <h1 style="color: var(--primary); margin-bottom: 5px;">InovaFam3D</h1>
+        <p style="font-size: 0.7em; opacity: 0.6; margin-bottom: 20px;">SISTEMA DE GESTÃO v6.1</p>
         
         <div class="user-grid">
-            <button class="user-btn" onclick="selectUser('Marcelo')"><i class="fas fa-user"></i><br>Marcelo</button>
-            <button class="user-btn" onclick="selectUser('Esposa')"><i class="fas fa-user-female"></i><br>Esposa</button>
+            <button class="user-btn active" id="btn-marcelo" onclick="selectUser('Marcelo')"><i class="fas fa-user"></i> Marcelo</button>
+            <button class="user-btn" id="btn-esposa" onclick="selectUser('Esposa')"><i class="fas fa-user-friends"></i> Esposa</button>
         </div>
         
-        <input type="password" id="pass-input" placeholder="Senha da Empresa" style="width:100%; padding:12px; margin-bottom:15px; border-radius:8px; border:1px solid var(--border); background:#0d1117; color:white; text-align:center;">
-        <button class="btn-main" onclick="authenticate()">ACESSAR ERP</button>
+        <input type="password" id="pass-input" placeholder="Senha da Empresa" onkeypress="if(event.key==='Enter') authenticate()">
+        <button class="btn-main" onclick="authenticate()">ENTRAR NO ERP</button>
+        
+        <button onclick="hardReset()" style="margin-top: 20px; background: none; border: none; color: #555; font-size: 10px; cursor: pointer; text-decoration: underline;">Limpar Conflitos de Dados (Reset)</button>
     </div>
 </div>
 
 <div id="app" class="container hidden">
     <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <div>
-            <h2 id="welcome-msg" style="color: var(--primary);">Olá, Marcelo</h2>
-            <p style="font-size: 0.7em; opacity: 0.5;" id="current-date"></p>
+            <h2 id="welcome-msg" style="color: var(--primary);">Olá</h2>
+            <p style="font-size: 0.7em; opacity: 0.5;">Acesso Autorizado</p>
         </div>
-        <button onclick="logout()" class="btn-outline" style="border-color: #30363d; color: #8b949e;">SAIR</button>
+        <button onclick="logout()" style="background:none; border:none; color: var(--danger); cursor:pointer;">SAIR</button>
     </header>
 
     <div class="kpi-row">
         <div class="kpi-card"><span>Faturamento</span><h2 id="kpi-fat">R$ 0,00</h2></div>
         <div class="kpi-card" style="border-color: var(--success)"><span>Lucro Líquido</span><h2 id="kpi-luc">R$ 0,00</h2></div>
         <div class="kpi-card" style="border-color: var(--gold)"><span>Vendas</span><h2 id="kpi-vol">0</h2></div>
-        <div class="kpi-card" style="border-color: var(--danger)"><span>ADS</span><h2 id="kpi-ads">R$ 0,00</h2></div>
     </div>
 
     <nav class="nav">
-        <button class="nav-btn active" onclick="tab('dash')">PAINEL</button>
-        <button class="nav-btn" onclick="tab('calc')">CALCULADORA</button>
-        <button class="nav-btn" onclick="tab('items')">CATÁLOGO</button>
-        <button class="nav-btn" onclick="tab('report')">RELATÓRIOS</button>
-        <button class="nav-btn" onclick="tab('config')">CUSTOS</button>
+        <button class="nav-btn active" onclick="showTab('dash', this)">PAINEL</button>
+        <button class="nav-btn" onclick="showTab('calc', this)">CALCULADORA</button>
+        <button class="nav-btn" onclick="showTab('items', this)">CATÁLOGO</button>
+        <button class="nav-btn" onclick="showTab('report', this)">HISTÓRICO</button>
+        <button class="nav-btn" onclick="showTab('config', this)">CUSTOS</button>
     </nav>
 
     <div id="tab-dash" class="tab-content">
-        <div class="grid-2">
-            <div class="card">
-                <h3>Tendência de Vendas</h3>
-                <canvas id="mainChart" height="150"></canvas>
-            </div>
-            <div class="card" style="background: linear-gradient(135deg, #161b22 0%, #0d1117 100%); border: 1px solid var(--accent);">
-                <h3><i class="fas fa-robot"></i> IA Advisor</h3>
-                <div id="ai-response" style="font-size: 0.85em; margin: 15px 0; min-height: 80px; color: #cbd5e1;">Aguardando comando...</div>
-                <button class="btn-main" style="background: var(--accent); color: white;" onclick="askGemini()">ANALISAR MEU MÊS</button>
-            </div>
+        <div class="card">
+            <h3>Vendas Recentes (Mês Atual)</h3>
+            <canvas id="mainChart" height="120"></canvas>
         </div>
     </div>
 
     <div id="tab-calc" class="tab-content hidden">
-        <div class="grid-2">
-            <div class="card">
-                <h3>Simular Preço</h3>
+        <div class="card">
+            <h3>Simulador de Precificação</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
                 <div class="input-group">
-                    <label>Produto</label>
-                    <select id="calc_prod" onchange="runEngine()">
-                        <option value="">-- Selecione do Catálogo --</option>
+                    <label>Peça do Catálogo</label>
+                    <select id="calc_prod" onchange="runEngine()"></select>
+                </div>
+                <div class="input-group">
+                    <label>Marketplace</label>
+                    <select id="calc_plat" onchange="runEngine()">
+                        <option value="pix">PIX / Direta</option>
+                        <option value="elo7">Elo7</option>
+                        <option value="ml">Mercado Livre</option>
+                        <option value="shopee">Shopee</option>
                     </select>
                 </div>
-                <div class="grid-2" style="grid-template-columns: 1fr 1fr; gap:10px;">
-                    <div class="input-group"><label>Plataforma</label><select id="calc_plat" onchange="runEngine()"><option value="pix">PIX</option><option value="elo7">Elo7</option><option value="ml">Mercado Livre</option><option value="shopee">Shopee</option></select></div>
-                    <div class="input-group"><label>ADS</label><select id="calc_ads" onchange="runEngine()"><option value="0">Sem ADS</option><option value="google">Google</option><option value="meta">Meta</option></select></div>
-                </div>
             </div>
-            <div class="card">
-                <h3>Matriz de Lucratividade</h3>
-                <table class="matrix-table">
-                    <thead><tr><th>Margem</th><th>Venda</th><th>Lucro</th><th>Ação</th></tr></thead>
-                    <tbody id="matrix-body"></tbody>
-                </table>
-            </div>
+        </div>
+        <div class="card">
+            <table>
+                <thead><tr><th>Margem %</th><th>Venda</th><th>Lucro Real</th><th>Ação</th></tr></thead>
+                <tbody id="matrix-body"></tbody>
+            </table>
         </div>
     </div>
 
     <div id="tab-items" class="tab-content hidden">
         <div class="card">
             <h3>Novo Item</h3>
-            <div class="grid-2">
-                <input type="text" id="p_nome" placeholder="Nome da Peça">
-                <select id="p_tipo"><option value="pla">PLA</option><option value="petg">PETG</option><option value="abs">ABS</option></select>
-                <input type="number" id="p_peso" placeholder="Peso Total (g)">
-                <input type="number" id="p_tempo" placeholder="Tempo Total (h)" step="0.1">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div class="input-group"><label>Nome</label><input type="text" id="p_nome"></div>
+                <div class="input-group"><label>Tipo</label><select id="p_tipo"><option value="pla">PLA</option><option value="petg">PETG</option></select></div>
+                <div class="input-group"><label>Peso (g)</label><input type="number" id="p_peso"></div>
+                <div class="input-group"><label>Tempo (h)</label><input type="number" id="p_tempo" step="0.1"></div>
             </div>
-            <button class="btn-main" onclick="saveToCatalog()" style="margin-top:15px">ADICIONAR AO CATÁLOGO</button>
+            <button class="btn-main" onclick="saveToCatalog()">SALVAR ITEM</button>
         </div>
         <div id="catalog-list"></div>
     </div>
 
     <div id="tab-report" class="tab-content hidden">
         <div class="card">
-            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                <h3>Histórico Detalhado</h3>
-                <button onclick="exportCSV()" class="btn-outline" style="border-color:var(--primary); color:var(--primary)">EXPORTAR EXCEL (CSV)</button>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3>Relatório Mensal</h3>
+                <select id="filter-month" onchange="refreshBI()" style="width:120px;"></select>
             </div>
-            <div class="grid-2" style="margin-bottom:20px; grid-template-columns: 1fr 1fr 1fr;">
-                <select id="filter-day" onchange="renderReport()"><option value="">Todos os Dias</option></select>
-                <select id="filter-month" onchange="renderReport()"></select>
-                <select id="filter-year" onchange="renderReport()"><option value="2026">2026</option></select>
-            </div>
-            <div style="overflow-x:auto">
-                <table class="matrix-table">
+            <div style="overflow-x:auto; margin-top:15px;">
+                <table>
                     <thead><tr><th>Data</th><th>Item</th><th>Plat</th><th>Venda</th><th>Lucro</th><th>User</th><th>Ação</th></tr></thead>
                     <tbody id="report-body"></tbody>
                 </table>
@@ -170,196 +160,159 @@
     <div id="tab-config" class="tab-content hidden">
         <div class="card">
             <h3>Parâmetros de Custo</h3>
-            <div class="grid-2">
-                <div><label>PLA (kg)</label><input type="number" id="c_pla"></div>
-                <div><label>PETG (kg)</label><input type="number" id="c_petg"></div>
-                <div><label>Energia (kWh)</label><input type="number" id="c_luz"></div>
-                <div><label>Manutenção (R$/h)</label><input type="number" id="c_dep"></div>
-                <div><label>ADS Google</label><input type="number" id="c_ads_g"></div>
-                <div><label>ADS Meta</label><input type="number" id="c_ads_m"></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                <div class="input-group"><label>PLA (R$/kg)</label><input type="number" id="c_pla"></div>
+                <div class="input-group"><label>PETG (R$/kg)</label><input type="number" id="c_petg"></div>
+                <div class="input-group"><label>Energia (kWh)</label><input type="number" id="c_luz"></div>
+                <div class="input-group"><label>Manutenção (R$/h)</label><input type="number" id="c_dep"></div>
             </div>
-            <div class="input-group" style="margin-top:20px">
-                <label>Sua Chave Gemini API (Plano Pro)</label>
-                <input type="password" id="c_gemini" placeholder="Cole sua chave aqui">
-            </div>
-            <button class="btn-main" onclick="saveConfigs()">SALVAR CONFIGURAÇÕES</button>
+            <button class="btn-main" onclick="saveConfigs()">ATUALIZAR CUSTOS</button>
         </div>
     </div>
 </div>
 
 <script>
+    // --- ENGINE ANTI-CRISE ---
     const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbycyHpnL4YYf_kyuvdne82MqWPFt_LL19bS40H6ba3yvs6nhVWBmL1mBZ_e_qOGJWcV/exec";
+    const DB_KEY = 'inova_v6_1_stable';
     
-    let state = JSON.parse(localStorage.getItem('inova_v6_final')) || {
-        cfg: { pla:110, petg:105, abs:95, luz:0.95, dep:3.0, watts:280, ads_g:6, ads_m:5, emb:4.5, falha:10, pass:"15@0117Inova", gemini:"" },
+    let state = {
+        cfg: { pla:110, petg:100, luz:0.95, dep:2.5, watts:280, emb:4.5, falha:10, pass:"15@0117Inova" },
         catalog: [],
         history: [],
-        user: "Marcelo"
+        currentUser: "Marcelo"
     };
 
-    let biChart = null;
-
-    function selectUser(u) {
-        state.user = u;
-        document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active'));
-        event.currentTarget.classList.add('active');
+    // Migração e Carregamento
+    function loadState() {
+        try {
+            const saved = localStorage.getItem(DB_KEY);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                // Mescla os dados salvos com a estrutura padrão para evitar campos 'undefined'
+                state = { ...state, ...parsed, cfg: { ...state.cfg, ...parsed.cfg } };
+            }
+        } catch (e) {
+            console.error("Erro ao carregar banco de dados", e);
+            document.getElementById('debug-console').style.display = 'block';
+        }
     }
 
     function authenticate() {
-        if(document.getElementById('pass-input').value === state.cfg.pass) {
+        loadState();
+        const input = document.getElementById('pass-input').value;
+        if(input === state.cfg.pass) {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('app').classList.remove('hidden');
-            document.getElementById('welcome-msg').innerText = "Olá, " + state.user;
+            document.getElementById('welcome-msg').innerText = "Olá, " + state.currentUser;
             init();
-        } else { alert("Senha incorreta"); }
+        } else {
+            alert("Senha Incorreta! Tente novamente.");
+        }
+    }
+
+    function selectUser(u) {
+        state.currentUser = u;
+        document.getElementById('btn-marcelo').classList.toggle('active', u === 'Marcelo');
+        document.getElementById('btn-esposa').classList.toggle('active', u === 'Esposa');
+    }
+
+    function hardReset() {
+        if(confirm("Isso apagará o histórico local para resolver conflitos. Os dados na Planilha Google NÃO serão afetados. Continuar?")) {
+            localStorage.clear();
+            location.reload();
+        }
     }
 
     function init() {
-        document.getElementById('current-date').innerText = new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        setupMonths();
         loadInputs();
-        setupFilters();
         refreshBI();
         updateDropdown();
     }
 
-    // --- CÁLCULO MESTRE (MARKUP DIVISOR) ---
+    // --- CÁLCULOS ---
     function runEngine() {
         const item = state.catalog.find(i => i.id == document.getElementById('calc_prod').value);
         if(!item) return;
 
         const plat = document.getElementById('calc_plat').value;
-        const adsKey = document.getElementById('calc_ads').value;
-
-        const cMaterial = (item.peso / 1000) * state.cfg[item.tipo] * (1 + state.cfg.falha/100);
-        const cEnergia = (state.cfg.watts / 1000) * item.tempo * state.cfg.luz;
-        const cManut = item.tempo * state.cfg.dep;
-        const cAds = adsKey === '0' ? 0 : (adsKey === 'google' ? state.cfg.ads_g : state.cfg.ads_m);
-        
-        const custoBase = cMaterial + cEnergia + cManut + state.cfg.emb + cAds;
+        const cBase = ((item.peso/1000 * state.cfg[item.tipo]) * (1 + state.cfg.falha/100)) + (state.cfg.watts/1000 * item.tempo * state.cfg.luz) + (item.tempo * state.cfg.dep) + state.cfg.emb;
 
         const body = document.getElementById('matrix-body');
         body.innerHTML = "";
-
         [20, 50, 70, 100, 150, 200].forEach(m => {
-            let mDec = m/100;
-            // Cálculo de precificação para garantir a margem líquida
-            let precoSug = custoBase * (1 + mDec);
-            if(plat === 'elo7') precoSug = (precoSug + 1.5) / 0.88;
-            else if(plat === 'ml') precoSug = (precoSug + 5) / 0.84;
-            else if(plat === 'shopee') precoSug = precoSug / 0.80;
+            let pSug = cBase * (1 + m/100);
+            if(plat === 'elo7') pSug = (pSug + 1.5) / 0.88;
+            if(plat === 'ml') pSug = (pSug + 5) / 0.84;
+            if(plat === 'shopee') pSug = pSug / 0.80;
 
-            const taxas = (plat === 'pix' ? 0 : (plat === 'elo7' ? precoSug*0.12+1.5 : (plat === 'ml' ? precoSug*0.16+5 : precoSug*0.20)));
-            const lucro = precoSug - taxas - custoBase;
+            const taxas = (plat === 'pix' ? 0 : (plat === 'elo7' ? pSug*0.12+1.5 : (plat === 'ml' ? pSug*0.16+5 : pSug*0.20)));
+            const luc = pSug - taxas - cBase;
 
             body.innerHTML += `<tr>
                 <td><b>${m}%</b></td>
-                <td>R$ ${precoSug.toFixed(2)}</td>
-                <td style="color:var(--success)">R$ ${lucro.toFixed(2)}</td>
-                <td><button class="btn-sell" onclick="confirmSale('${item.nome}', ${precoSug.toFixed(2)}, ${lucro.toFixed(2)}, '${plat.toUpperCase()}', ${m}, ${cAds})">VENDER</button></td>
+                <td>R$ ${pSug.toFixed(2)}</td>
+                <td style="color:var(--success)">R$ ${luc.toFixed(2)}</td>
+                <td><button onclick="confirmSale('${item.nome}', ${pSug.toFixed(2)}, ${luc.toFixed(2)}, '${plat.toUpperCase()}')" style="background:var(--success); color:white; border:none; padding:5px 10px; border-radius:6px; cursor:pointer;">VENDER</button></td>
             </tr>`;
         });
     }
 
-    // --- GESTÃO DE DADOS ---
-    function confirmSale(nome, preco, lucro, plat, marg, ads) {
-        const d = new Date();
-        const venda = { 
-            id: Date.now(), 
-            data: d.toLocaleDateString('pt-BR'), 
-            dia: d.getDate(),
-            mes: d.getMonth(), 
-            ano: d.getFullYear(),
-            nome, preco, lucro, plat, margem: marg+"%", ads, user: state.user 
-        };
-        state.history.unshift(venda);
-        save();
-        fetch(GOOGLE_URL, {method:'POST', mode:'no-cors', body:JSON.stringify(venda)});
-        alert("Venda registrada com sucesso!");
+    function confirmSale(nome, preco, lucro, plat) {
+        const v = { id: Date.now(), data: new Date().toLocaleDateString('pt-BR'), nome, preco, lucro, plat, mes: new Date().getMonth(), user: state.currentUser };
+        state.history.unshift(v);
+        saveState();
+        fetch(GOOGLE_URL, {method:'POST', mode:'no-cors', body:JSON.stringify(v)});
+        alert("Venda registrada!");
         refreshBI();
-        tab('dash');
-    }
-
-    function deleteSale(id) {
-        if(confirm("Deseja excluir permanentemente este registro local?")) {
-            state.history = state.history.filter(s => s.id !== id);
-            save(); refreshBI();
-        }
+        showTab('dash', document.querySelector('.nav-btn'));
     }
 
     function refreshBI() {
-        const mes = parseInt(document.getElementById('filter-month').value);
-        const filtered = state.history.filter(s => s.mes === mes);
-
+        const mSel = parseInt(document.getElementById('filter-month').value || new Date().getMonth());
+        const filtered = state.history.filter(s => s.mes === mSel);
+        
         const fat = filtered.reduce((a,b) => a + b.preco, 0);
         const luc = filtered.reduce((a,b) => a + b.lucro, 0);
-        const ads = filtered.reduce((a,b) => a + b.ads, 0);
-
+        
         document.getElementById('kpi-fat').innerText = "R$ " + fat.toFixed(2);
         document.getElementById('kpi-luc').innerText = "R$ " + luc.toFixed(2);
         document.getElementById('kpi-vol').innerText = filtered.length;
-        document.getElementById('kpi-ads').innerText = "R$ " + ads.toFixed(2);
-
+        
         renderChart(filtered);
-        renderReport();
+        renderReport(filtered);
     }
 
-    function renderReport() {
-        const d = document.getElementById('filter-day').value;
-        const m = parseInt(document.getElementById('filter-month').value);
-        
-        let filtered = state.history.filter(s => s.mes === m);
-        if(d !== "") filtered = filtered.filter(s => s.dia == d);
-
-        document.getElementById('report-body').innerHTML = filtered.map(s => `
+    function renderReport(data) {
+        document.getElementById('report-body').innerHTML = data.map(s => `
             <tr>
                 <td>${s.data}</td>
                 <td><b>${s.nome}</b></td>
                 <td>${s.plat}</td>
                 <td>R$ ${s.preco.toFixed(2)}</td>
                 <td style="color:var(--success)">R$ ${s.lucro.toFixed(2)}</td>
-                <td><small>${s.user}</small></td>
-                <td><button onclick="deleteSale(${s.id})" class="btn-outline" style="padding:2px 5px;"><i class="fas fa-trash"></i></button></td>
+                <td><small>${s.user || 'S/I'}</small></td>
+                <td><button onclick="delSale(${s.id})" style="background:none; border:none; color:var(--danger); cursor:pointer;"><i class="fas fa-trash"></i></button></td>
             </tr>`).join('');
     }
 
-    // --- IA ADVISOR (GEMINI) ---
-    async function askGemini() {
-        if(!state.cfg.gemini) return alert("Configure sua API Key nas configurações primeiro.");
-        const out = document.getElementById('ai-response');
-        out.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Analisando dados...";
-
-        const context = `Relatório InovaFam3D: Faturamento R$ ${document.getElementById('kpi-fat').innerText}, Lucro R$ ${document.getElementById('kpi-luc').innerText}, Vendas: ${document.getElementById('kpi-vol').innerText}. Atue como consultor de negócios e dê uma dica rápida para melhorar o lucro.`;
-
-        try {
-            const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${state.cfg.gemini}`, {
-                method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contents: [{ parts: [{ text: context }] }] })
-            });
-            const j = await r.json();
-            out.innerHTML = `<i class="fas fa-quote-left" style="color:var(--primary)"></i> ${j.candidates[0].content.parts[0].text}`;
-        } catch (e) { out.innerText = "Erro ao conectar com a IA. Verifique sua chave."; }
-    }
-
-    // --- UTILITÁRIOS ---
-    function renderChart(data) {
-        const ctx = document.getElementById('mainChart').getContext('2d');
-        const vals = data.slice(0,10).reverse().map(s => s.preco);
-        if(biChart) biChart.destroy();
-        biChart = new Chart(ctx, { 
-            type:'line', 
-            data: { 
-                labels: data.slice(0,10).reverse().map(s=>s.data.split('/')[0]), 
-                datasets: [{ label:'Vendas', data:vals, borderColor:'#58a6ff', tension:0.4, fill:true, backgroundColor:'rgba(88, 166, 255, 0.1)' }] 
-            }, 
-            options: { plugins:{legend:{display:false}}, scales:{y:{grid:{color:'#21262d'}},x:{grid:{display:false}}} } 
-        });
+    // --- UI E ESTADO ---
+    function showTab(t, btn) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('tab-'+t).classList.remove('hidden');
+        btn.classList.add('active');
+        if(t === 'items') renderCatalog();
     }
 
     function saveToCatalog() {
-        const i = { id:Date.now(), nome:document.getElementById('p_nome').value, tipo:document.getElementById('p_tipo').value, peso:parseFloat(document.getElementById('p_peso').value), tempo:parseFloat(document.getElementById('p_tempo').value) };
+        const i = { id: Date.now(), nome: document.getElementById('p_nome').value, tipo: document.getElementById('p_tipo').value, peso: parseFloat(document.getElementById('p_peso').value), tempo: parseFloat(document.getElementById('p_tempo').value) };
         if(!i.nome) return;
         state.catalog.push(i);
-        save(); renderCatalog(); updateDropdown();
+        saveState();
+        renderCatalog();
+        updateDropdown();
         document.getElementById('p_nome').value = "";
     }
 
@@ -367,47 +320,11 @@
         document.getElementById('catalog-list').innerHTML = state.catalog.map(i => `
             <div class="card" style="display:flex; justify-content:space-between; padding:15px; margin-bottom:10px;">
                 <span><b>${i.nome}</b> (${i.tipo.toUpperCase()})</span>
-                <button onclick="delCat(${i.id})" class="btn-outline" style="border:none;"><i class="fas fa-trash"></i></button>
+                <button onclick="delCat(${i.id})" style="color:var(--danger); background:none; border:none; cursor:pointer;"><i class="fas fa-trash"></i></button>
             </div>`).join('');
     }
 
-    function setupFilters() {
-        const m = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-        document.getElementById('filter-month').innerHTML = m.map((n, i) => `<option value="${i}" ${i === new Date().getMonth() ? 'selected' : ''}>${n}</option>`).join('');
-        const d = document.getElementById('filter-day');
-        for(let i=1; i<=31; i++) d.innerHTML += `<option value="${i}">${i}</option>`;
-    }
-
-    function tab(t) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('tab-'+t).classList.remove('hidden');
-        event.currentTarget.classList.add('active');
-        if(t === 'items') renderCatalog();
-    }
-    function save() { localStorage.setItem('inova_v6_final', JSON.stringify(state)); }
-    function delCat(id) { state.catalog = state.catalog.filter(i => i.id !== id); save(); renderCatalog(); updateDropdown(); }
-    function updateDropdown() { document.getElementById('calc_prod').innerHTML = '<option value="">-- Catálogo --</option>' + state.catalog.map(i => `<option value="${i.id}">${i.nome}</option>`).join(''); }
     function loadInputs() {
-        document.getElementById('c_pla').value = state.cfg.pla; document.getElementById('c_petg').value = state.cfg.petg;
-        document.getElementById('c_luz').value = state.cfg.luz; document.getElementById('c_dep').value = state.cfg.dep;
-        document.getElementById('c_ads_g').value = state.cfg.ads_g; document.getElementById('c_ads_m').value = state.cfg.ads_m;
-        document.getElementById('c_gemini').value = state.cfg.gemini;
-    }
-    function saveConfigs() {
-        state.cfg.pla = parseFloat(document.getElementById('c_pla').value); state.cfg.petg = parseFloat(document.getElementById('c_petg').value);
-        state.cfg.luz = parseFloat(document.getElementById('c_luz').value); state.cfg.dep = parseFloat(document.getElementById('c_dep').value);
-        state.cfg.ads_g = parseFloat(document.getElementById('c_ads_g').value); state.cfg.ads_m = parseFloat(document.getElementById('c_ads_m').value);
-        state.cfg.gemini = document.getElementById('c_gemini').value;
-        save(); alert("Custos Atualizados!");
-    }
-    function exportCSV() {
-        let csv = "Data,Item,Venda,Lucro,Plataforma,Usuario\n";
-        state.history.forEach(s => csv += `${s.data},${s.nome},${s.preco},${s.lucro},${s.plat},${s.user}\n`);
-        const b = new Blob([csv], {type:'text/csv'}); const u = window.URL.createObjectURL(b);
-        const a = document.createElement('a'); a.href=u; a.download='vendas_inovafam.csv'; a.click();
-    }
-    function logout() { location.reload(); }
-</script>
-</body>
-</html>
+        document.getElementById('c_pla').value = state.cfg.pla;
+        document.getElementById('c_petg').value = state.cfg.petg;
+        document.getElementById('c_
