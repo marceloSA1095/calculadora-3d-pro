@@ -9,31 +9,11 @@
     <style>
         /* Paleta Oficial InovaFam3D */
         :root {
-            /* Cores da Marca */
-            --brand-blue: #004B79;    /* Azul da Logo */
-            --brand-lime: #96C83C;    /* Verde da Logo */
-            --brand-lime-hover: #7ea832;
-            
-            /* Tons de Fundo (Dark Navy) */
-            --bg-base: #070e14;       /* Fundo principal super escuro azulado */
-            --bg-surface: #0e1721;    /* Fundo dos cards */
-            --bg-elevated: #162230;   /* Fundo de inputs e hover */
-            
-            /* Estrutura */
-            --separator: #1f3042; 
-            --accent: var(--brand-lime); 
-            --accent-dim: rgba(150, 200, 60, 0.15);
-            
-            /* Status */
-            --success: #96C83C; 
-            --warning: #ffd60a; 
-            --danger: #ff453a;
-            
-            /* Texto */
-            --text-primary: #ffffff; 
-            --text-secondary: #8ba0b5; /* Cinza azulado */
-            
-            /* Formas */
+            --brand-blue: #004B79; --brand-lime: #96C83C; --brand-lime-hover: #7ea832;
+            --bg-base: #070e14; --bg-surface: #0e1721; --bg-elevated: #162230;
+            --separator: #1f3042; --accent: var(--brand-lime); --accent-dim: rgba(150, 200, 60, 0.15);
+            --success: #96C83C; --warning: #ffd60a; --danger: #ff453a;
+            --text-primary: #ffffff; --text-secondary: #8ba0b5;
             --radius-lg: 20px; --radius-md: 12px; --radius-sm: 8px;
             --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
@@ -47,12 +27,10 @@
         p, span { font-size: 15px; }
         .caption { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
 
-        /* Estilo Dinâmico da Logo em Texto */
-        .logo-text-inova { color: #58a6ff; /* Azul mais claro para leitura no dark mode */ }
+        .logo-text-inova { color: #58a6ff; }
         .logo-text-fam { color: var(--brand-lime); }
         .logo-text-3d { color: var(--text-primary); }
 
-        /* Telas e Layout */
         #login-view { position: fixed; inset: 0; background: radial-gradient(circle at center, var(--bg-surface) 0%, var(--bg-base) 100%); display: flex; align-items: center; justify-content: center; z-index: 9999; }
         .login-box { width: 100%; max-width: 380px; padding: 45px 30px; text-align: center; background: rgba(14, 23, 33, 0.8); backdrop-filter: blur(15px); border-radius: 24px; border: 1px solid var(--separator); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
         
@@ -70,7 +48,6 @@
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Componentes */
         .card { background-color: var(--bg-surface); border-radius: var(--radius-lg); padding: 24px; border: 1px solid var(--separator); margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
         .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; }
@@ -96,7 +73,6 @@
         .badge.pendente { background: rgba(255,214,10,0.15); color: var(--warning); }
         .badge.concluido { background: rgba(150, 200, 60, 0.15); color: var(--brand-lime); }
 
-        /* Loader de Conexão */
         #cloud-status { position: fixed; bottom: 20px; right: 20px; background: var(--bg-elevated); padding: 10px 20px; border-radius: 20px; font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; z-index: 10000; border: 1px solid var(--separator); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--warning); box-shadow: 0 0 5px var(--warning); }
         .status-dot.online { background: var(--brand-lime); box-shadow: 0 0 5px var(--brand-lime); }
@@ -212,10 +188,10 @@
                 <div class="grid-3" style="margin-top: 20px;">
                     <div class="input-group"><label>Nome do Projeto</label><input type="text" id="cat-name"></div>
                     <div class="input-group"><label>Material Primário</label><select id="cat-mat"><option value="pla">PLA</option><option value="petg">PETG</option></select></div>
-                    <div class="input-group"><label>Peso (gramas)</label><input type="number" id="cat-weight"></div>
+                    <div class="input-group"><label>Peso (gramas)</label><input type="number" id="cat-weight" title="Peso físico real do objeto"></div>
                     <div class="input-group"><label>Tempo de Máquina (horas)</label><input type="number" id="cat-time" step="0.5"></div>
                     <div class="input-group"><label>Tempo Humano</label><select id="cat-labor"><option value="0.25">15 min</option><option value="0.5" selected>30 min</option><option value="1">1 hora</option><option value="2">2 horas</option></select></div>
-                    <div class="input-group"><label>Dimensões (A x L x P em cm)</label><div style="display: flex; gap: 5px;"><input type="number" id="cat-h" placeholder="A"><input type="number" id="cat-w" placeholder="L"><input type="number" id="cat-d" placeholder="P"></div></div>
+                    <div class="input-group"><label>Dimensões na Caixa (A x L x P em cm)</label><div style="display: flex; gap: 5px;"><input type="number" id="cat-h" placeholder="A"><input type="number" id="cat-w" placeholder="L"><input type="number" id="cat-d" placeholder="P"></div></div>
                 </div>
                 <button class="btn-primary" style="width: auto; margin-top: 10px;" onclick="App.Views.Catalog.save()">Salvar na Nuvem</button>
             </div>
@@ -320,7 +296,7 @@
 
                     document.getElementById('kpi-revenue').innerText = revenue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                     document.getElementById('kpi-profit').innerText = profit.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                    document.getElementById('kpi-margin').innerText = completed.length; // Atualizado para mostrar volume real
+                    document.getElementById('kpi-margin').innerText = completed.length;
 
                     this.renderChart(completed);
                 },
@@ -337,7 +313,6 @@
                         type: 'bar',
                         data: {
                             labels: labels.map(l => `Dia ${l}`),
-                            // Alterado para a cor verde limão da InovaFam3D
                             datasets: [{ label: 'Receita', data: values, backgroundColor: '#96C83C', borderRadius: 4 }]
                         },
                         options: {
@@ -377,7 +352,49 @@
                     }).join('');
                     document.getElementById('pricing-matrix').innerHTML = html;
                 },
-                async fetchFrete() { /* Lógica mantida da v9.0 */ }
+                async fetchFrete() {
+                    const cep = document.getElementById('calc-cep').value.replace(/\D/g, '');
+                    const resEl = document.getElementById('frete-result');
+                    const itemId = document.getElementById('calc-model').value;
+                    
+                    if(cep.length !== 8) { alert("CEP Inválido"); return; }
+                    if(!itemId) { alert("Selecione o produto."); return; }
+
+                    const item = Store.catalog.find(i => i.id === itemId);
+                    resEl.style.display = 'block';
+                    resEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Consultando Correios...';
+
+                    try {
+                        const req = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                        const data = await req.json();
+                        if(data.erro) throw new Error();
+
+                        const ufOrigem = Store.settings.cep.substring(0,2);
+                        const ufDestino = cep.substring(0,2);
+                        let base = ufOrigem === ufDestino ? 18.90 : 36.50;
+                        
+                        // LÓGICA DE FRETE REAL (Físico vs Cubagem)
+                        const pesoFisico = item.weight / 1000; // Convertendo para KG
+                        const pesoCubico = (item.dim.h * item.dim.w * item.dim.d) / 6000;
+                        const pesoTarifado = Math.max(pesoFisico, pesoCubico);
+                        
+                        const motivoTarifa = pesoCubico > pesoFisico ? "Volume (Cubagem)" : "Peso Físico";
+
+                        if(pesoTarifado > 1) base += (Math.ceil(pesoTarifado - 1) * 6.50); // Adicional por KG extra
+
+                        resEl.innerHTML = `
+                            <b>Destino:</b> ${data.localidade} - ${data.uf}<br>
+                            <div style="display: flex; gap: 15px; margin: 8px 0; color: var(--text-secondary); font-size: 12px;">
+                                <span><i class="fas fa-weight-hanging"></i> Físico: ${pesoFisico.toFixed(2)}kg</span>
+                                <span><i class="fas fa-box"></i> Cúbico: ${pesoCubico.toFixed(2)}kg</span>
+                            </div>
+                            <span style="font-size: 12px;">Tarifado por: <b style="color: var(--text-primary);">${motivoTarifa}</b></span><br>
+                            <span style="color: var(--brand-lime); font-weight: 600; display: block; margin-top: 10px; font-size: 15px;">PAC Est.: R$ ${base.toFixed(2)}</span>
+                        `;
+                    } catch(e) {
+                        resEl.innerHTML = '<span style="color: var(--danger);">Falha ao consultar CEP.</span>';
+                    }
+                }
             },
 
             Catalog: {
